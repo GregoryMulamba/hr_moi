@@ -1,0 +1,283 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* App Container */
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #333;
+  color: #fff;
+  z-index: 100;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2); /* Ombre pour effet de profondeur */
+  transition: background-color 0.3s ease-in-out;
+}
+
+.sidebar:hover {
+  background-color: #444; /* Changement de fond au survol */
+}
+.top_section {
+  display: flex;
+  align-items: center;
+  padding: 15px 10px;
+  background-color: #333;
+}
+
+/* Styles pour l'image du logo */
+.logo-image {
+  width: 60px; /* Ajustez la taille selon vos besoins */
+  height: auto;
+  margin-right: 10px; /* Espacement entre l'image et le texte */
+}
+
+
+.menu_section {
+  margin-top: 20px;
+  padding-left: 10px;
+}
+
+.menu_title {
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Links and hover effects */
+.link {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.link:hover {
+  background-color: #FF7900;
+}
+
+.icon {
+  margin-right: 15px;
+}
+
+.link_text {
+  display: block;
+}
+
+/* Topbar Styles */
+.topbar {
+  background-color: #333;
+  color: #fff;
+  border-bottom: 2px solid #FF7900; /* Bordure inférieure orange pour le style */
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 250px;
+  width: calc(100% - 250px);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 99;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Ajout d'une ombre pour l'effet de profondeur */
+  transition: background-color 0.3s ease;
+}
+
+.topbar:hover {
+  background-color: #444; /* Changement de la couleur de fond au survol */
+}
+
+.topbar-title {
+  font-size: 26px; /* Taille légèrement augmentée pour plus de présence */
+  font-weight: 700; /* Texte plus épais */
+  letter-spacing: 1px; /* Espacement des lettres pour un effet élégant */
+  color: #FF7900; /* Titre en orange pour correspondre à la bordure */
+  transition: color 0.3s ease; /* Effet de transition sur la couleur */
+}
+
+.topbar-title:hover {
+  color: #fff; /* Changement de la couleur du titre au survol */
+}
+
+.topbar-icons {
+  display: flex;
+  align-items: center;
+}
+
+.topbar-icons .icon-button {
+  color: #fff;
+  margin-left: 20px;
+  font-size: 24px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.topbar-icons .icon-button:hover {
+  color: #FF7900; /* Effet de survol orange pour les icônes */
+  transform: scale(1.1); /* Légère augmentation de la taille lors du survol */
+}
+
+/* Animation du Topbar */
+@keyframes slideIn {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.topbar {
+  animation: slideIn 0.5s ease-in-out; /* Animation d'entrée du topbar */
+}
+
+
+/* Main Content Styles */
+.content {
+  margin-left: 114px; /* Réduction de la marge pour coller davantage la sidebar */
+  margin-top: 60px; /* Compte la hauteur de la topbar */
+  padding: 20px;
+  width: calc(100% - 270px); /* Ajustement de la largeur pour coller plus au sidebar */
+  background-color: #f4f4f4;
+  min-height: calc(100vh - 60px);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer Styles */
+.footer {
+  padding: 10px;
+  text-align: center;
+  font-size: 0.8em;
+  background-color: #FF7900;
+  position: fixed;
+  bottom: 0;
+  left: 250px; /* Commence après la sidebar */
+  width: calc(100% - 250px); /* Prend le reste de l'écran */
+  z-index: 98;
+}
+
+/* Media Queries */
+@media (max-width: 960px) {
+  .sidebar {
+    width: 80px;
+  }
+
+  .topbar {
+    left: 80px;
+    width: calc(100% - 80px);
+  }
+
+  .content {
+    margin-left: 90px;
+    width: calc(100% - 90px);
+  }
+
+  .footer {
+    left: 80px;
+    width: calc(100% - 80px);
+  }
+
+  .topbar-title {
+    font-size: 20px;
+  }
+
+  .topbar-icons .icon-button {
+    font-size: 20px;
+    margin-left: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .topbar-title {
+    font-size: 18px;
+  }
+
+  .topbar-icons {
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+
+  .topbar-icons .icon-button {
+    font-size: 18px;
+  }
+}
+
+/* Dialog Styles */
+.dialog-title {
+  background-color: #1976d2;
+  color: white;
+}
+
+.dialog-content {
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.dialog-actions {
+  background-color: #f5f5f5;
+}
+
+.button-close {
+  color: #1976d2;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.card header {
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.card .content {
+  padding: 16px;
+  flex-grow: 1;
+}
+
+.card footer {
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+}
+
+.card h2 {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.card p {
+  margin: 0;
+  color: #555;
+}
