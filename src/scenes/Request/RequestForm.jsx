@@ -1,174 +1,230 @@
-// src/scenes/request/RequestForm.js
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  TextField,
-  Button,
-  MenuItem,
-  Select,
-  Box,
-  Chip,
   FormControl,
   InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  Snackbar,
   Alert,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
 } from '@mui/material';
-import { requestTypesData } from '../../data/requestTypes';
-import AttachmentIcon from '@mui/icons-material/Attachment';
+import { fetchDataFromAPI, postDataToAPI } from '../../api';
+import { useNavigate } from 'react-router-dom';
 
-const RequestForm = ({ openDialog, handleCloseDialog, addRequest }) => {
-  const [formData, setFormData] = useState({
-    assignTo: '',
-    category: '',
-    ticket: '',
-    requestType: '',
-    description: '',
-    documentsRequired: [],
-    sla: '',
-    groupe: '',
-    niveaux: {
-      niveau1: [],
-      niveau2: [],
-      niveau3: [],
-    },
-    status: 'Soumis',
-    uploadedFiles: [], // Nouveau champ pour gérer les fichiers uploadés
+const RequestForm = () => {
+  const [open, setOpen] = useState(false);
+  const [typeDemande, setTypeDemande] = useState('');
+  const [description, setDescription] = useState('');
+  const [fichierJoint, setFichierJoint] = useState(null);
+  const [typesDemande, setTypesDemande] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // États pour la validation
+  const [errors, setErrors] = useState({
+    typeDemande: false,
+    description: false,
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  // États pour le Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
-    if (name === 'requestType') {
-      const selectedRequest = requestTypesData.find((item) => item.type === value);
-      if (selectedRequest) {
-        setFormData({
-          ...formData,
-          requestType: value,
-          sla: selectedRequest.sla,
-          groupe: selectedRequest.groupe,
-          niveaux: selectedRequest.niveaux,
-          documentsRequired: selectedRequest.documentsRequired,
-        });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTypesDemande = async () => {
+      try {
+        const typesResponse = await fetchDataFromAPI('/demande/TypeDemande/get_type_demande/');
+        setTypesDemande(typesResponse.data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des types de demande:', error);
+        handleSnackbarOpen('Erreur de chargement des données.', 'error');
       }
-    } else {
-      setFormData({ ...formData, [name]: value });
+    };
+
+    fetchTypesDemande();
+  }, []);
+
+  // Fonction pour ouvrir le Snackbar
+  const handleSnackbarOpen = (message, severity = 'success') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  // Fonction pour fermer le Snackbar
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  // Fonction pour soumettre la demande
+  const handleSubmit = async () => {
+    let formIsValid = true;
+    let formErrors = { ...errors };
+  
+    // Vérifier les champs obligatoires
+    if (!typeDemande) {
+      formIsValid = false;
+      formErrors.typeDemande = true;
+    }
+  
+    if (!description) {
+      formIsValid = false;
+      formErrors.description = true;
+    }
+  
+    setErrors(formErrors);
+  
+    if (!formIsValid) {
+      handleSnackbarOpen('Veuillez remplir tous les champs obligatoires.', 'warning');
+      return;
+    }
+  
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('type_demande', typeDemande);
+    formData.append('description', description);
+    
+    // Vérifiez ici si un fichier est sélectionné avant de l'ajouter
+    if (fichierJoint) {
+      formData.append('fichier_joint', fichierJoint);
+    }
+  
+    try {
+      await postDataToAPI('/demande/Demande/creer_demande/', formData);
+  
+      handleSnackbarOpen('Demande créée avec succès !', 'success');
+      setOpen(false); // Fermer le formulaire
+  
+      // Réinitialiser les champs du formulaire après soumission réussie
+      setTypeDemande('');
+      setDescription('');
+      setFichierJoint(null);
+  
+      // Réinitialiser l'état des erreurs
+      setErrors({
+        typeDemande: false,
+        description: false,
+      });
+  
+    } catch (error) {
+      if (error.response) {
+        const errorCode = error.response.status;
+  
+        if (errorCode === 400) {
+          handleSnackbarOpen(
+            'Les données fournies ne sont pas correctes. Veuillez vérifier votre saisie.',
+            'error'
+          );
+        } else if (errorCode === 403) {
+          handleSnackbarOpen(
+            "Vous n'êtes pas autorisé à faire cette demande, car vous ne faites pas partie d'un groupe associé à ce type de demande.",
+            'error'
+          );
+        } else {
+          handleSnackbarOpen('Une erreur est survenue. Veuillez réessayer plus tard.', 'error');
+        }
+      } else {
+        handleSnackbarOpen(
+          'Échec de la création de la demande. Vérifiez votre connexion.',
+          'error'
+        );
+      }
+    } finally {
+      setLoading(false);
     }
   };
+  
 
-  const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
-    setFormData({ ...formData, uploadedFiles: [...formData.uploadedFiles, ...files] });
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  const handleSave = () => {
-    addRequest(formData);
-    handleCloseDialog();
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
-    <Dialog open={openDialog} onClose={handleCloseDialog}>
-      <DialogTitle>Ajouter une Demande</DialogTitle>
-      <DialogContent>
-        <TextField
-          label="Assign to"
-          name="assignTo"
-          value={formData.assignTo}
-          onChange={handleInputChange}
-          fullWidth
-          margin="dense"
-        />
-        <TextField
-          label="Catégorie"
-          name="category"
-          value={formData.category}
-          onChange={handleInputChange}
-          fullWidth
-          margin="dense"
-        />
-        <TextField
-          label="Ticket"
-          name="ticket"
-          value={formData.ticket}
-          onChange={handleInputChange}
-          fullWidth
-          margin="dense"
-        />
-        <FormControl fullWidth margin="dense">
-          <InputLabel>Type de Demande</InputLabel>
-          <Select
-            name="requestType"
-            value={formData.requestType}
-            onChange={handleInputChange}
-          >
-            {requestTypesData.map((item) => (
-              <MenuItem key={item.type} value={item.type}>
-                {item.type}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <TextField
-          label="Description"
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          fullWidth
-          margin="dense"
-        />
-        <Box mt={2}>
-          <Alert severity="info">
-            <strong>SLA:</strong> {formData.sla}
-            <br />
-            <strong>Groupe:</strong> {formData.groupe}
-            <br />
-            <strong>Membres Niveau 1:</strong> {formData.niveaux.niveau1.join(', ')}
-            <br />
-            <strong>Membres Niveau 2:</strong> {formData.niveaux.niveau2.join(', ')}
-            <br />
-            <strong>Membres Niveau 3:</strong> {formData.niveaux.niveau3.join(', ')}
-          </Alert>
-        </Box>
-        {/* Champ d'upload pour les fichiers */}
-        <Box mt={2}>
-          <Button variant="contained" component="label">
-            Upload Files
+    <div>
+      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+        Créer une Demande
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogContent>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Type de demande <span style={{ color: 'red' }}>*</span></InputLabel>
+            <Select
+              value={typeDemande}
+              onChange={(e) => setTypeDemande(e.target.value)}
+              label="Type de demande"
+              error={errors.typeDemande}
+            >
+              {typesDemande.map((type) => (
+                <MenuItem key={type.id} value={type.id}>
+                  {type.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {errors.typeDemande && (
+            <div style={{ color: 'red', fontSize: '0.875rem' }}>
+              Ce champ est obligatoire.
+            </div>
+          )}
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Description "
+            multiline
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            error={errors.description}
+            helperText={errors.description && "Ce champ est obligatoire."}
+          />
+
+          <Button variant="outlined" component="label" fullWidth>
+            Ajouter un fichier
             <input
               type="file"
               hidden
-              multiple
-              onChange={handleFileUpload}
+              onChange={(e) => setFichierJoint(e.target.files[0])}
             />
           </Button>
-          {formData.uploadedFiles.length > 0 && (
-            <List>
-              {formData.uploadedFiles.map((file, index) => (
-                <ListItem key={index}>
-                  <ListItemIcon>
-                    <AttachmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={file.name} />
-                </ListItem>
-              ))}
-            </List>
-          )}
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCloseDialog} color="primary">
-          Annuler
-        </Button>
-        <Button onClick={handleSave} color="primary">
-          Sauvegarder
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Annuler
+          </Button>
+          <Button onClick={handleSubmit} color="primary" disabled={loading}>
+            {loading ? 'Envoi...' : 'Soumettre'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar pour afficher les messages */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 };
 

@@ -6,54 +6,57 @@ import {
   DialogActions,
   Button,
   Typography,
+  Grid,
+  Divider,
 } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 
 const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
-  backgroundColor: "#ff9800", // Couleur orange
+  backgroundColor: "#ff9800",
   color: "#fff",
-  fontSize: "1.5rem",
+  fontSize: "1.8rem",
   fontWeight: "bold",
   textAlign: "center",
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  padding: theme.spacing(2),
+  borderBottom: `2px solid ${theme.palette.divider}`,
 }));
 
 const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
-  backgroundColor: "#fff3e0", // Couleur orange clair
-  padding: theme.spacing(3),
+  backgroundColor: "#fff3e0",
+  padding: theme.spacing(4),
 }));
 
 const StyledDialogActions = styled(DialogActions)(({ theme }) => ({
-  backgroundColor: "#fff3e0", // Couleur orange clair
+  backgroundColor: "#fff3e0",
   padding: theme.spacing(2),
 }));
 
 const CloseButton = styled(Button)(({ theme }) => ({
-  color: "#ff9800", // Couleur orange
+  color: "#ff9800",
   fontWeight: "bold",
+  fontSize: "1rem",
   "&:hover": {
-    backgroundColor: "#ffe0b2", // Couleur orange clair en hover
+    backgroundColor: "#ffe0b2",
   },
 }));
 
-const StyledTypography = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  "&.MuiTypography-h6": {
-    fontSize: "1.1rem",
-    fontWeight: "bold",
-    color: "#333", // Couleur du texte pour les titres
-  },
-  "&.MuiTypography-body1": {
-    fontSize: "0.95rem",
-    color: "#555", // Couleur du texte pour le contenu
-    lineHeight: "1.6",
-  },
+const SectionTitle = styled(Typography)(({ theme }) => ({
+  fontSize: "1.3rem",
+  fontWeight: "bold",
+  color: "#333",
+  marginBottom: theme.spacing(1),
+}));
+
+const InfoText = styled(Typography)(({ theme }) => ({
+  fontSize: "1.05rem",
+  color: "#444",
+  lineHeight: "1.7",
+  marginBottom: theme.spacing(1.5),
 }));
 
 const DetailsAgent = ({ open, onClose, agent }) => {
   if (!agent) return null;
-  console.log(`agents sub : ${JSON.stringify(agent)}`);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -61,90 +64,68 @@ const DetailsAgent = ({ open, onClose, agent }) => {
         <InfoOutlined sx={{ mr: 1 }} /> Détails de l'Agent
       </StyledDialogTitle>
       <StyledDialogContent>
-        <StyledTypography variant="h6">Nom : {agent.name}</StyledTypography>
-        <StyledTypography variant="body1">
-          Prénom : {agent.prenom}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Postnom : {agent.postnom}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Email : {agent.email}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Téléphone : {agent.phone}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Direction : {agent.direction}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Employeur : {agent.employeur}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Numéro Matricule : {agent.num_mat}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Date de Naissance : {agent.date_naissance}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Contrat : {agent.contrat}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Statut du Contrat : {agent.statut_contrat}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Fonction : {agent.fonction}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Ancienneté (années) : {agent.anciennete_annee}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Ancienneté (mois) : {agent.anciennete_mois}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Date de Départ : {agent.date_depart}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Lieu d'embauche : {agent.lieu_embauche}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Lieu d'affectation : {agent.lieu_affectation}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Grade : {agent.grade}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Date d'embauche : {agent.date_embauche}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Date de Fin de Contrat : {agent.date_fin_cdd}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Durée du Contrat CDD : {agent.dure_cdd}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Période d'essai : {agent.periode_essai}
-        </StyledTypography>
-        <StyledTypography variant="body1">
-          Manager : {agent.manager_name}
-        </StyledTypography>
+        
+        <SectionTitle>Informations Personnelles</SectionTitle>
+        <Divider sx={{ mb: 2 }} />
 
-        {/* Affichage des subordonnés */}
-        <StyledTypography variant="h6">N-1 :</StyledTypography>
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <InfoText>Nom : {agent.name}</InfoText>
+            <InfoText>Prénom : {agent.prenom}</InfoText>
+            <InfoText>Postnom : {agent.postnom}</InfoText>
+            <InfoText>Email : {agent.email}</InfoText>
+            <InfoText>Téléphone : {agent.phone}</InfoText>
+            <InfoText>Age : {agent.ageAgent}</InfoText>
+
+
+          </Grid>
+          <Grid item xs={6}>
+            <InfoText>Direction : {agent.direction}</InfoText>
+            <InfoText>Employeur : {agent.employeur}</InfoText>
+            <InfoText>Numéro Matricule : {agent.num_mat}</InfoText>
+            <InfoText>Lieu d'embauche : {agent.lieu_embauche}</InfoText>
+            <InfoText>Lieu d'affectation : {agent.lieu_affectation}</InfoText>
+            <InfoText>Tranche d'âge : {agent.age}</InfoText>
+
+          </Grid>
+        </Grid>
+
+        <SectionTitle sx={{ mt: 3 }}>Détails de Contrat</SectionTitle>
+        <Divider sx={{ mb: 2 }} />
+
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <InfoText>Contrat : {agent.contrat}</InfoText>
+            <InfoText>Statut du Contrat : {agent.statut_contrat}</InfoText>
+            <InfoText>Fonction : {agent.fonction}</InfoText>
+            <InfoText>Ancienneté (années) : {agent.anciennete_annee}</InfoText>
+            <InfoText>Ancienneté (mois) : {agent.anciennete_mois}</InfoText>
+          </Grid>
+          <Grid item xs={6}>
+            <InfoText>Grade : {agent.grade}</InfoText>
+            <InfoText>Date d'embauche : {agent.date_embauche}</InfoText>
+            <InfoText>Date de Fin de Contrat : {agent.date_fin_cdd}</InfoText>
+            <InfoText>Durée du Contrat CDD : {agent.dure_cdd}</InfoText>
+            <InfoText>Période d'essai : {agent.periode_essai}</InfoText>
+          </Grid>
+        </Grid>
+
+        <SectionTitle sx={{ mt: 3 }}>Manager et Subordonnés</SectionTitle>
+        <Divider sx={{ mb: 2 }} />
+
+        <InfoText>Manager : {agent.manager_name}</InfoText>
+        
+        <SectionTitle>N-1 :</SectionTitle>
         {agent.subordonnes && agent.subordonnes.length > 0 ? (
-          <ul>
-            <div>
-              {agent.subordonnes.map((subordonne) => (
-                  <a  key={subordonne.id}>
-                    <li> {subordonne}</li>
-                   
-                  </a>
-              ))}
-            </div>
+          <ul style={{ paddingLeft: "1.5rem", marginTop: "0.5rem" }}>
+            {agent.subordonnes.map((subordonne) => (
+              <li key={subordonne.id} style={{ fontSize: "1.05rem", color: "#555" }}>{subordonne}</li>
+            ))}
           </ul>
         ) : (
-          <StyledTypography variant="body1">Aucun n-1.</StyledTypography>
+          <InfoText>Aucun n-1.</InfoText>
         )}
+        
       </StyledDialogContent>
       <StyledDialogActions>
         <CloseButton onClick={onClose}>Fermer</CloseButton>

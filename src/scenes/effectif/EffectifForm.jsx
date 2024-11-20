@@ -31,7 +31,7 @@ const initialFormData = {
   contrat: "",
   num_mat: "",
   phone: "",
-  age: "",
+  // age: "",
   statut_contrat: "",
   fonction: "",
   email: "",
@@ -59,8 +59,9 @@ const EffectifForm = ({
   const [cuidOptions, setCuidOptions] = useState([]);
   const [nationaliteOptions, setNationaliteOptions] = useState([]);
   const [genreOptions, setGenreOptions] = useState([]);
-  const [ageOptions, setAgeOptions] = useState([]);
+  // const [ageOptions, setAgeOptions] = useState([]);
   const [gradeOptions, setGradeOptions] = useState([]);
+  const [classificationOptions, setClassificationOptions] = useState([]);
   const [statut_contratOptions, setStatut_contratOptions] = useState([]);
   const [directionOptions, setDirectionOptions] = useState([]);
   const [employeurOptions, setEmployeurOptions] = useState([]);
@@ -94,7 +95,7 @@ const EffectifForm = ({
           fetchDataFromAPI("/effectif/agent/get_user/"),
         ]);
 
-        const { age, genre, statut_contrat, nationalite, grade } =
+        const {  genre, statut_contrat, nationalite, grade, classification } =
           choicesResponse.data;
         const direction = directionResponse.data;
         const employeur = employeurResponse.data;
@@ -119,8 +120,9 @@ const EffectifForm = ({
             : [];
         };
         setGenreOptions(transformChoices(genre || []));
-        setAgeOptions(transformChoices(age || []));
+        // setAgeOptions(transformChoices(age || []));
         setGradeOptions(transformChoices(grade || []));
+        setClassificationOptions(transformChoices(classification || []));
         setCuidOptions(transformForeignKeyData(cuid || []));
         setStatut_contratOptions(transformChoices(statut_contrat || []));
         setDirectionOptions(transformForeignKeyData(direction || []));
@@ -204,10 +206,10 @@ const EffectifForm = ({
       newErrors.num_mat = "Le numéro matricule est requis";
       valid = false;
     }
-    if (!formData.age) {
-      newErrors.age = "L'âge est requis";
-      valid = false;
-    }
+    // if (!formData.age) {
+    //   newErrors.age = "L'âge est requis";
+    //   valid = false;
+    // }
     if (!formData.statut_contrat) {
       newErrors.statut_contrat = "Le statut du contrat est requis";
       valid = false;
@@ -248,10 +250,10 @@ const EffectifForm = ({
       newErrors.date_embauche = "La date d'embauche est requise";
       valid = false;
     }
-    if (!formData.dure_cdd) {
-      newErrors.dure_cdd = "La durée du CDD est requise";
-      valid = false;
-    }
+    // if (!formData.dure_cdd) {
+    //   newErrors.dure_cdd = "La durée du CDD est requise";
+    //   valid = false;
+    // }
     if (!formData.periode_essai) {
       newErrors.periode_essai = "La période d'essai est requise";
       valid = false;
@@ -260,10 +262,10 @@ const EffectifForm = ({
       newErrors.manager_name = "Le nom du manager est requis";
       valid = false;
     }
-    if (!formData.date_depart) {
-      newErrors.date_depart = "La date de départ est requise";
-      valid = false;
-    }
+    // if (!formData.date_depart) {
+    //   newErrors.date_depart = "La date de départ est requise";
+    //   valid = false;
+    // }
 
     // Définir les erreurs et renvoyer l'état de validité
     setErrors(newErrors);
@@ -504,7 +506,7 @@ const EffectifForm = ({
                   helperText={errors.phone}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <FormControl fullWidth required>
                   <InputLabel>tranche d'âge</InputLabel>
                   <Select
@@ -525,7 +527,7 @@ const EffectifForm = ({
                     )}
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth required>
                   <InputLabel>Statut du Contrat</InputLabel>
@@ -632,6 +634,28 @@ const EffectifForm = ({
                     label="Grade">
                     {!loading ? (
                       gradeOptions.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>Loading...</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth required>
+                  <InputLabel>Classification</InputLabel>
+                  <Select
+                    name="classification"
+                    value={formData.classification || ""}
+                    onChange={handleInputChange}
+                    error={!!errors.classification}
+                    helperText={errors.classification}
+                    label="Classification">
+                    {!loading ? (
+                      classificationOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>

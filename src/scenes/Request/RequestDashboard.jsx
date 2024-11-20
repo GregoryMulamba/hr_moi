@@ -19,9 +19,7 @@ const RequestDashboard = () => {
       <Typography variant="h4" gutterBottom>
         Tableau de Bord des Demandes
       </Typography>
-      <Button variant="contained" color="primary" onClick={() => setOpenForm(true)}>
-        Créer une Nouvelle Demande
-      </Button>
+     
       
       <RequestList requests={requests} setRequests={setRequests} />
 
@@ -29,7 +27,7 @@ const RequestDashboard = () => {
       {openForm && (
         <RequestForm
           open={openForm}
-          onClose={() => setOpenForm(false)}
+          onClose={() => setOpenForm(true)}
           addRequest={addRequest}
         />
       )}

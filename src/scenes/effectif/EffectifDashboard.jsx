@@ -7,19 +7,11 @@ import {
   IconButton,
   Modal,
   Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Button,
 } from "@mui/material";
-import { Doughnut, Bar } from 'react-chartjs-2';
+import { Doughnut } from "react-chartjs-2";
 import { fetchDataFromAPI } from "../../api";
 import * as XLSX from "xlsx";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import TurnoverChart from "./components/TurnoverFilter";
 
 const EffectifDashboard = () => {
@@ -29,9 +21,8 @@ const EffectifDashboard = () => {
   const [agents, setAgents] = useState([]);
   const [grades, setGrades] = useState({});
   const [openModal, setOpenModal] = useState(false);
-  const [selectedEmployeur, setSelectedEmployeur] = useState(null);
-  const [turnoverData, setTurnoverData] = useState([]);
   const [modalContent, setModalContent] = useState(null);
+  const [turnoverData, setTurnoverData] = useState([]);
 
   useEffect(() => {
     fetchEffectifData();
@@ -46,7 +37,7 @@ const EffectifDashboard = () => {
       const response = await fetchDataFromAPI("/effectif/agent/count_by_genre/");
       setEmployeurs(response.data);
     } catch (error) {
-      console.error("Error fetching employeurs data:", error);
+      console.error("Erreur lors de la récupération des employeurs :", error);
     }
   };
 
@@ -55,7 +46,7 @@ const EffectifDashboard = () => {
       const response = await fetchDataFromAPI("/effectif/agent/count_by_grade/");
       setGrades(response.data);
     } catch (error) {
-      console.error("Error fetching grades data:", error);
+      console.error("Erreur lors de la récupération des grades :", error);
     }
   };
 
@@ -64,20 +55,7 @@ const EffectifDashboard = () => {
       const response = await fetchDataFromAPI("/effectif/agent/count_by_statut_contrat/");
       setStatutsContrat(response.data);
     } catch (error) {
-      console.error("Error fetching statut contrat data:", error);
-    }
-  };
-
-  const fetchAgentsByEmployeur = async (employeur) => {
-    try {
-      const response = await fetchDataFromAPI(`/effectif/agent?employeur=${employeur}`);
-      const filteredAgents = response.data.results.filter(
-        (agent) => agent.employeur.type_employeur === employeur
-      );
-      setAgents(filteredAgents);
-    } catch (error) {
-      console.error("Error fetching agents:", error);
-      setAgents([]);
+      console.error("Erreur lors de la récupération des statuts de contrat :", error);
     }
   };
 
@@ -86,8 +64,7 @@ const EffectifDashboard = () => {
       const response = await fetchDataFromAPI("/effectif/agent/count_by_contrat/");
       setTypesContrat(response.data);
     } catch (error) {
-      console.error("Error fetching types contrat data:", error);
-      setTypesContrat({});
+      console.error("Erreur lors de la récupération des types de contrat :", error);
     }
   };
 
@@ -96,7 +73,7 @@ const EffectifDashboard = () => {
       const response = await fetchDataFromAPI("/effectif/agent/turnover_mensuel/");
       setTurnoverData(response.data);
     } catch (error) {
-      console.error("Error fetching turnover data:", error);
+      console.error("Erreur lors de la récupération des données de turnover :", error);
     }
   };
 
@@ -113,9 +90,9 @@ const EffectifDashboard = () => {
   const handleExportExcel = () => {
     const dataToExport = agents.map((agent) => ({
       Nom: agent.name || "",
-      Prénom: agent.prenom,
+      Prénom: agent.prenom || "",
       Email: agent.user ? agent.user.email : "",
-      Fonction: agent.fonction,
+      Fonction: agent.fonction || "",
       Direction: agent.direction ? agent.direction.name : "",
       "Numéro matricule": agent.num_mat || "",
       "Lieu d'embauche": agent.lieu_embauche || "",
@@ -128,9 +105,8 @@ const EffectifDashboard = () => {
     XLSX.writeFile(wb, "Agents_Export.xlsx");
   };
 
-  // Données pour les graphiques
   const contractData = {
-    labels: ['CDI', 'CDD', 'Expats', 'Stagiaires', 'Prestataires'],
+    labels: ["CDI", "CDD", "Expats", "Stagiaires", "Prestataires"],
     datasets: [
       {
         data: [
@@ -140,18 +116,7 @@ const EffectifDashboard = () => {
           typesContrat.Stagiaires || 0,
           typesContrat.Prestataires || 0,
         ],
-        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF'],
-      },
-    ],
-  };
-
-  const turnoverChartData = {
-    labels: turnoverData.map((entry) => entry.month),
-    datasets: [
-      {
-        label: 'Taux de Rotation',
-        data: turnoverData.map((entry) => entry.turnover),
-        backgroundColor: '#FF6384',
+        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56", "#4BC0C0", "#9966FF"],
       },
     ],
   };
@@ -161,43 +126,42 @@ const EffectifDashboard = () => {
       <Typography variant="h4" gutterBottom>
         Tableau de Bord des Effectifs
       </Typography>
-
       <Grid container spacing={3}>
-        {/* Total Staff */}
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ boxShadow: 3 }}>
             <CardContent>
               <Typography variant="h6">Total Staff</Typography>
-              <Typography variant="h4">{Object.values(employeurs).reduce((sum, val) => sum + (val.homme + val.femme), 0)}</Typography>
+              <Typography variant="h4">
+                {Object.values(employeurs).reduce(
+                  (sum, val) => sum + (val.homme + val.femme),
+                  0
+                )}
+              </Typography>
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => handleOpenModal('staffDetails')}
+                onClick={() => handleOpenModal("staffDetails")}
               >
                 Voir Plus
               </Button>
             </CardContent>
           </Card>
         </Grid>
-
-        {/* Taux d'Attrition */}
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ boxShadow: 3 }}>
             <CardContent>
               <Typography variant="h6">Taux d'Attrition</Typography>
-              <Typography variant="h4">10%</Typography> {/* Exemple, calcul à faire dynamiquement */}
+              <Typography variant="h4">10%</Typography>
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => handleOpenModal('attritionDetails')}
+                onClick={() => handleOpenModal("attritionDetails")}
               >
                 Voir Plus
               </Button>
             </CardContent>
           </Card>
         </Grid>
-
-        {/* Types de Contrats */}
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ boxShadow: 3 }}>
             <CardContent>
@@ -206,7 +170,7 @@ const EffectifDashboard = () => {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => handleOpenModal('contractDetails')}
+                onClick={() => handleOpenModal("contractDetails")}
               >
                 Voir Plus
               </Button>
@@ -215,7 +179,6 @@ const EffectifDashboard = () => {
         </Grid>
       </Grid>
 
-      {/* Section pour le graphique de turnover */}
       <Box mt={5}>
         <Typography variant="h5" gutterBottom>
           Taux de Rotation Mensuel
@@ -237,29 +200,31 @@ const EffectifDashboard = () => {
               border: "2px solid #000",
               boxShadow: 24,
               p: 4,
-            }}>
-            {/* Contenu dynamique pour les Modals */}
-            {modalContent === 'staffDetails' && (
+            }}
+          >
+            {modalContent === "staffDetails" && (
               <Typography variant="h5">Détails du Staff</Typography>
             )}
-            {modalContent === 'attritionDetails' && (
+            {modalContent === "attritionDetails" && (
               <Typography variant="h5">Détails du Taux d'Attrition</Typography>
             )}
-            {modalContent === 'contractDetails' && (
+            {modalContent === "contractDetails" && (
               <Typography variant="h5">Détails des Types de Contrats</Typography>
             )}
             <Box mt={3} display="flex" justifyContent="space-between">
               <Button
                 onClick={handleExportExcel}
                 variant="contained"
-                color="primary">
+                color="primary"
+              >
                 Exporter
               </Button>
               <Button
                 onClick={handleCloseModal}
                 variant="contained"
                 color="primary"
-                sx={{ ml: 2 }}>
+                sx={{ ml: 2 }}
+              >
                 Fermer
               </Button>
             </Box>

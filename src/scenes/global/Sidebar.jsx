@@ -10,6 +10,8 @@ import {
 } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import logoImage from '../utils/assets/Ordc.png'; 
+import { Login as FaLogin, HowToReg as FaHowToReg } from "@mui/icons-material";
+
 const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -39,6 +41,7 @@ const Sidebar = ({ children }) => {
       name: "Evaluation",
       icon: <FaClipboardList />,
     },
+  
   ];
 
   const menuItemsEffectif = [
@@ -79,6 +82,7 @@ const Sidebar = ({ children }) => {
     }
 
   ];
+ 
 
   return (
     <div className={`app ${!isOpen ? "collapsed" : ""}`}>
@@ -125,6 +129,8 @@ const Sidebar = ({ children }) => {
               <div className="link_text">{item.name}</div>
             </NavLink>
           ))}
+          
+         
         </div>
       </div>
       <main className={`content ${!isOpen ? "collapsed" : ""}`}>

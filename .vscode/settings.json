@@ -1,3 +1,6 @@
 {
-    "mayank1513.trello-kanban.Workspace.filePath": ".tkb"
+    "mayank1513.trello-kanban.Workspace.filePath": ".tkb",
+    "editor.mouseWheelZoom": true,
+    "terminal.integrated.mouseWheelZoom": false,
+    "window.zoomLevel": 1
 }
