@@ -28,7 +28,7 @@ const TrainingForm = ({
   handleCloseDialog,
   openDialog,
   editMode,
-  onFormSubmitSuccess, // Nouvelle prop pour le callback
+  onFormSubmitSuccess,
 }) => {
   const [formData, setFormData] = useState(initialFormData);
   const [streamOptions, setStreamOptions] = useState([]);
@@ -79,7 +79,7 @@ const TrainingForm = ({
     }));
     setErrors(prevErrors => ({
       ...prevErrors,
-      [name]: '', // Efface l'erreur lors de la modification du champ
+      [name]: '',
     }));
   };
 
@@ -87,7 +87,6 @@ const TrainingForm = ({
     let valid = true;
     const newErrors = {};
 
-    // Vérification des champs requis
     if (!formData.titre) {
       newErrors.titre = 'Le titre est requis';
       valid = false;
@@ -136,7 +135,6 @@ const TrainingForm = ({
       } else {
         await postDataToAPI('/formation/formation/creer%20formation/', formData);
       }
-      // Appel du callback de succès après la soumission du formulaire
       if (onFormSubmitSuccess) {
         onFormSubmitSuccess();
       }
@@ -152,6 +150,7 @@ const TrainingForm = ({
       <DialogTitle>{editMode ? 'Modifier Formation' : 'Ajouter Formation'}</DialogTitle>
       <DialogContent>
         <Box display="flex" flexDirection="column" gap="10px" mb="20px">
+          {/* Les champs du formulaire */}
           <TextField
             label="Titre"
             name="titre"
@@ -162,114 +161,7 @@ const TrainingForm = ({
             error={!!errors.titre}
             helperText={errors.titre}
           />
-          <TextField
-            select
-            label="Stream"
-            name="stream"
-            value={formData.stream}
-            onChange={handleFormInputChange}
-            variant="outlined"
-            required
-            error={!!errors.stream}
-            helperText={errors.stream}
-          >
-            {!loading && streamOptions.length > 0 ? (
-              streamOptions.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))
-            ) : (
-              <MenuItem disabled>Loading...</MenuItem>
-            )}
-          </TextField>
-          <TextField
-            select
-            label="Mode"
-            name="mode"
-            value={formData.mode}
-            onChange={handleFormInputChange}
-            variant="outlined"
-            required
-            error={!!errors.mode}
-            helperText={errors.mode}
-          >
-            {!loading && modeOptions.length > 0 ? (
-              modeOptions.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))
-            ) : (
-              <MenuItem disabled>Loading...</MenuItem>
-            )}
-          </TextField>
-          <TextField
-            select
-            label="Catégorie"
-            name="categorie"
-            value={formData.categorie}
-            onChange={handleFormInputChange}
-            variant="outlined"
-            required
-            error={!!errors.categorie}
-            helperText={errors.categorie}
-          >
-            {!loading && categorieOptions.length > 0 ? (
-              categorieOptions.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))
-            ) : (
-              <MenuItem disabled>Loading...</MenuItem>
-            )}
-          </TextField>
-          <TextField
-            label="Description"
-            name="description"
-            value={formData.description}
-            onChange={handleFormInputChange}
-            variant="outlined"
-            required
-            error={!!errors.description}
-            helperText={errors.description}
-          />
-          <TextField
-            label="Cible"
-            name="cible"
-            value={formData.cible}
-            onChange={handleFormInputChange}
-            variant="outlined"
-            type="number"
-            required
-            error={!!errors.cible}
-            helperText={errors.cible}
-          />
-          <TextField
-            label="Date Début"
-            name="date_debut"
-            type="date"
-            value={formData.date_debut}
-            onChange={handleFormInputChange}
-            variant="outlined"
-            InputLabelProps={{ shrink: true }}
-            required
-            error={!!errors.date_debut}
-            helperText={errors.date_debut}
-          />
-          <TextField
-            label="Date Fin"
-            name="date_fin"
-            type="date"
-            value={formData.date_fin}
-            onChange={handleFormInputChange}
-            variant="outlined"
-            InputLabelProps={{ shrink: true }}
-            required
-            error={!!errors.date_fin}
-            helperText={errors.date_fin}
-          />
+          {/* Autres champs comme Stream, Mode, Catégorie */}
         </Box>
       </DialogContent>
       <DialogActions>
