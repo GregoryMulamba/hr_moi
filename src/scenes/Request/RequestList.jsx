@@ -1,19 +1,18 @@
-// src/scenes/request/RequestList.js
-
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Box, Button, Alert, AlertTitle } from '@mui/material';
+import { Box, Button, Alert, AlertTitle, Chip } from '@mui/material';
+import { green, orange, red } from '@mui/material/colors';
 
 const RequestList = ({ requests, setRequests }) => {
   const handleTakeRequest = (id) => {
     const updatedRequests = requests.map((request) =>
-      request.id === id ? { ...request, status: 'Hand on' } : request
+      request.id === id ? { ...request, status: 'En cours' } : request
     );
     setRequests(updatedRequests);
   };
 
   const columns = [
-    { field: 'assignTo', headerName: 'Assign to', width: 150 },
+    { field: 'assignTo', headerName: 'Assigné à', width: 150 },
     { field: 'groupe', headerName: 'Groupe', width: 180 },
     { field: 'ticket', headerName: 'Ticket', width: 120 },
     { field: 'requestType', headerName: 'Type de Demande', width: 200 },
@@ -33,8 +32,33 @@ const RequestList = ({ requests, setRequests }) => {
           ? params.row.uploadedFiles.map((file) => file.name).join(', ')
           : '',
     },
-    { field: 'sla', headerName: 'SLA (Délai)', width: 150 },
-    { field: 'status', headerName: 'Statut', width: 150 },
+    { field: 'sla', headerName: 'SLA', width: 150 },
+    {
+      field: 'status',
+      headerName: 'Statut',
+      width: 150,
+      renderCell: (params) => {
+        const status = params.value;
+        let color = red[500];
+        if (status === 'Approuvé') color = green[500];
+        if (status === 'En attente') color = orange[500];
+        return <Chip label={status} style={{ backgroundColor: color, color: 'white' }} />;
+      },
+    },
+    {
+      field: 'action',
+      headerName: 'Actions',
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleTakeRequest(params.row.id)}
+        >
+          Prendre en charge
+        </Button>
+      ),
+    },
   ];
 
   return (

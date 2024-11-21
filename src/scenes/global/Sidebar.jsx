@@ -1,189 +1,156 @@
 import React, { useState } from "react";
 import {
   Menu as FaBars,
-  ListAlt as ListIcon,
-  Person as PersonIcon,
-  BarChart as ChartIcon,
-  Assignment as AssignmentIcon,
-  InsertChart as DashboardIcon,
-  Description as ContractIcon,
-  MailOutline as RequestIcon,
+  ListAlt as FaListAlt,
+  School as FaSchool,
+  Poll as FaPoll,
+  Group as FaUsers,
+  BarChart as FaRegChartBar,
+  Business as FaBuilding,
+  SupervisorAccount as FaUserTie,
+  Description as FaFileContract,
+  MailOutline as FaEnvelopeOpenText,
 } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
-import { Typography, Box } from "@mui/material";
-import logoImage from "../utils/assets/Ordc.png";
+import logoImage from '../utils/assets/Ordc.png'; 
+import { Login as FaLogin, HowToReg as FaHowToReg } from "@mui/icons-material";
 
-const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
-  const [isOpen, setIsOpen] = useState(isSidebarOpen);
+const Sidebar = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(true);
 
-  const toggleSidebarInternal = () => setIsOpen(!isOpen);
+  const toggle = () => setIsOpen(!isOpen);
 
   const menuItemsFormation = [
     {
       path: "/trainingdashboard",
       name: "Dashboard Formation",
-      icon: <DashboardIcon />,
+      icon: <FaSchool />,
     },
     {
       path: "/traininglist",
       name: "Training List",
-      icon: <ListIcon />,
+      icon: <FaListAlt />,
     },
     {
       path: "/trainingparticipation",
       name: "Participation",
-      icon: <AssignmentIcon />,
-    },
-    {
-      path: "/evaluation",
-      name: "Evaluation",
-      icon: <AssignmentIcon />,
-    },
+      icon: <FaUsers />, // Utilisation de `Group` pour représenter les participants
+    }
   ];
 
   const menuItemsEffectif = [
     {
       path: "/effectiflist",
       name: "Effectif List",
-      icon: <PersonIcon />,
+      icon: <FaUsers />,
     },
     {
       path: "/effectifdashboard",
       name: "Effectif Dashboard",
-      icon: <ChartIcon />,
+      icon: <FaRegChartBar />,
     },
     {
       path: "/directionList",
       name: "Direction",
-      icon: <PersonIcon />,
+      icon: <FaBuilding />,
     },
     {
       path: "/assign-subordinates",
       name: "Assign Subordinates",
-      icon: <PersonIcon />,
+      icon: <FaUserTie />,
     },
     {
       path: "/ContratList",
       name: "Contrat",
-      icon: <ContractIcon />,
+      icon: <FaFileContract />,
     },
     {
       path: "/EmployeurList",
       name: "Employeur",
-      icon: <PersonIcon />,
+      icon: <FaUserTie />,
     },
   ];
 
-  const menuItemsRequest = [
+  // Nouvelle catégorie Demande
+  const menuItemsDemande = [
     {
       path: "/request-dashboard",
-      name: "Dashboard Demande",
-      icon: <DashboardIcon />,
+      name: "Request ",
+      icon: <FaEnvelopeOpenText />,
     },
-    {
-      path: "/requestlist",
-      name: "Liste des Demandes",
-      icon: <RequestIcon />,
-    },
-    {
-      path: "/requestform",
-      name: "Créer une Demande",
-      icon: <RequestIcon />,
-    },
+    // Ajoute d'autres éléments spécifiques à la catégorie Demande si nécessaire
   ];
 
   return (
-    <Box className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
-      {/* Toggle Button */}
-      <div className="toggle-btn" onClick={toggleSidebarInternal}>
-        <FaBars />
-      </div>
+    <div className={`app ${!isOpen ? "collapsed" : ""}`}>
+      <div className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
+        <div className="top_section">
+          <img
+            src={logoImage}
+            alt="Logo"
+            className="logo-image"
+            style={{ display: isOpen ? "block" : "none" }}
+          />
+          <h1 className="logo" style={{ display: isOpen ? "block" : "none" }}>
+            HR & MOI
+          </h1>
+        </div>
 
-      {/* Logo Section */}
-      <div className="top_section">
-        <img
-          src={logoImage}
-          alt="Logo"
-          className="logo-image"
-          style={{ display: isOpen ? "block" : "none" }}
-        />
-        <Typography
-          variant="h6"
-          sx={{ color: "#fff", display: isOpen ? "block" : "none" }}
-        >
-          Orange HR
-        </Typography>
-      </div>
-
-      {/* Formation Section */}
-      <div className="menu_section">
-        <Typography variant="subtitle2" sx={{ color: "#bbb", pl: 2 }}>
-          FORMATION
-        </Typography>
-        {menuItemsFormation.map((item, index) => (
-          <NavLink
-            to={item.path}
-            key={index}
-            className="link"
-            activeClassName="active"
-          >
-            <div className="icon">{item.icon}</div>
-            <div
-              className="link_text"
-              style={{ display: isOpen ? "block" : "none" }}
+        <div className="menu_section">
+          <h2 className="menu_title">FORMATION</h2>
+          {menuItemsFormation.map((item, index) => (
+            <NavLink
+              to={item.path}
+              key={index}
+              className="link"
+              activeClassName="active"
             >
-              {item.name}
-            </div>
-          </NavLink>
-        ))}
-      </div>
+              <div className="icon-card">
+                <div className="icon">{item.icon}</div>
+              </div>
+              <div className="link_text">{item.name}</div>
+            </NavLink>
+          ))}
 
-      {/* Effectif Section */}
-      <div className="menu_section">
-        <Typography variant="subtitle2" sx={{ color: "#bbb", pl: 2 }}>
-          EFFECTIF
-        </Typography>
-        {menuItemsEffectif.map((item, index) => (
-          <NavLink
-            to={item.path}
-            key={index}
-            className="link"
-            activeClassName="active"
-          >
-            <div className="icon">{item.icon}</div>
-            <div
-              className="link_text"
-              style={{ display: isOpen ? "block" : "none" }}
+          <h2 className="menu_title">EFFECTIF</h2>
+          {menuItemsEffectif.map((item, index) => (
+            <NavLink
+              to={item.path}
+              key={index}
+              className="link"
+              activeClassName="active"
             >
-              {item.name}
-            </div>
-          </NavLink>
-        ))}
-      </div>
+              <div className="icon-card">
+                <div className="icon">{item.icon}</div>
+              </div>
+              <div className="link_text">{item.name}</div>
+            </NavLink>
+          ))}
 
-      {/* Request Section */}
-      <div className="menu_section">
-        <Typography variant="subtitle2" sx={{ color: "#bbb", pl: 2 }}>
-          DEMANDE
-        </Typography>
-        {menuItemsRequest.map((item, index) => (
-          <NavLink
-            to={item.path}
-            key={index}
-            className="link"
-            activeClassName="active"
-          >
-            <div className="icon">{item.icon}</div>
-            <div
-              className="link_text"
-              style={{ display: isOpen ? "block" : "none" }}
+          {/* Nouvelle section pour Demande */}
+          <h2 className="menu_title">DEMANDE</h2>
+          {menuItemsDemande.map((item, index) => (
+            <NavLink
+              to={item.path}
+              key={index}
+              className="link"
+              activeClassName="active"
             >
-              {item.name}
-            </div>
-          </NavLink>
-        ))}
+              <div className="icon-card">
+                <div className="icon">{item.icon}</div>
+              </div>
+              <div className="link_text">{item.name}</div>
+            </NavLink>
+          ))}
+        </div>
       </div>
-    </Box>
+      <main className={`content ${!isOpen ? "collapsed" : ""}`}>
+        {children}
+      </main>
+      <footer className={`footer ${!isOpen ? "collapsed" : ""}`}>
+        <p>&copy; 2024 ORDC</p>
+      </footer>
+    </div>
   );
 };
 
