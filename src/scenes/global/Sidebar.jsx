@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Menu as FaBars,
   ListAlt as FaListAlt,
@@ -12,11 +12,23 @@ import {
   MailOutline as FaEnvelopeOpenText,
 } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
-import logoImage from '../utils/assets/Ordc.png'; 
+import logoImage from "../utils/assets/Ordc.png";
 import { Login as FaLogin, HowToReg as FaHowToReg } from "@mui/icons-material";
 
 const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
+
+  // Gère le changement de taille de fenêtre
+  const handleResize = () => {
+    setIsOpen(window.innerWidth > 768); // Fermer le menu si la largeur est inférieure à 768px
+  };
+
+  useEffect(() => {
+    handleResize(); // Vérifie la taille initiale
+    window.addEventListener("resize", handleResize); // Ajoute l'écouteur
+
+    return () => window.removeEventListener("resize", handleResize); // Nettoie l'écouteur
+  }, []);
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -34,8 +46,8 @@ const Sidebar = ({ children }) => {
     {
       path: "/trainingparticipation",
       name: "Participation",
-      icon: <FaUsers />, // Utilisation de `Group` pour représenter les participants
-    }
+      icon: <FaUsers />,
+    },
   ];
 
   const menuItemsEffectif = [
@@ -71,14 +83,12 @@ const Sidebar = ({ children }) => {
     },
   ];
 
-  // Nouvelle catégorie Demande
   const menuItemsDemande = [
     {
       path: "/request-dashboard",
-      name: "Request ",
+      name: "Request",
       icon: <FaEnvelopeOpenText />,
     },
-    // Ajoute d'autres éléments spécifiques à la catégorie Demande si nécessaire
   ];
 
   return (
@@ -94,10 +104,15 @@ const Sidebar = ({ children }) => {
           <h1 className="logo" style={{ display: isOpen ? "block" : "none" }}>
             HR & MOI
           </h1>
+          <button className="toggle-button" onClick={toggle}>
+            <FaBars />
+          </button>
         </div>
 
         <div className="menu_section">
-          <h2 className="menu_title">FORMATION</h2>
+          <h2 className="menu_title" style={{ display: isOpen ? "block" : "none" }}>
+            FORMATION
+          </h2>
           {menuItemsFormation.map((item, index) => (
             <NavLink
               to={item.path}
@@ -108,11 +123,18 @@ const Sidebar = ({ children }) => {
               <div className="icon-card">
                 <div className="icon">{item.icon}</div>
               </div>
-              <div className="link_text">{item.name}</div>
+              <div
+                className="link_text"
+                style={{ display: isOpen ? "block" : "none" }}
+              >
+                {item.name}
+              </div>
             </NavLink>
           ))}
 
-          <h2 className="menu_title">EFFECTIF</h2>
+          <h2 className="menu_title" style={{ display: isOpen ? "block" : "none" }}>
+            EFFECTIF
+          </h2>
           {menuItemsEffectif.map((item, index) => (
             <NavLink
               to={item.path}
@@ -123,12 +145,18 @@ const Sidebar = ({ children }) => {
               <div className="icon-card">
                 <div className="icon">{item.icon}</div>
               </div>
-              <div className="link_text">{item.name}</div>
+              <div
+                className="link_text"
+                style={{ display: isOpen ? "block" : "none" }}
+              >
+                {item.name}
+              </div>
             </NavLink>
           ))}
 
-          {/* Nouvelle section pour Demande */}
-          <h2 className="menu_title">DEMANDE</h2>
+          <h2 className="menu_title" style={{ display: isOpen ? "block" : "none" }}>
+            DEMANDE
+          </h2>
           {menuItemsDemande.map((item, index) => (
             <NavLink
               to={item.path}
@@ -139,14 +167,17 @@ const Sidebar = ({ children }) => {
               <div className="icon-card">
                 <div className="icon">{item.icon}</div>
               </div>
-              <div className="link_text">{item.name}</div>
+              <div
+                className="link_text"
+                style={{ display: isOpen ? "block" : "none" }}
+              >
+                {item.name}
+              </div>
             </NavLink>
           ))}
         </div>
       </div>
-      <main className={`content ${!isOpen ? "collapsed" : ""}`}>
-        {children}
-      </main>
+      <main className={`content ${!isOpen ? "collapsed" : ""}`}>{children}</main>
       <footer className={`footer ${!isOpen ? "collapsed" : ""}`}>
         <p>&copy; 2024 ORDC</p>
       </footer>
