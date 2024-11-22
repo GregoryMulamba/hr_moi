@@ -75,7 +75,7 @@ const Topbar = () => {
           },
         }}
       >
-        <SearchIcon sx={{ color: "white", mr: 1 }} onClick={handleSearch} />
+        <SearchIcon sx={{ color: "black", mr: 1 }} onClick={handleSearch} />
         <InputBase
           placeholder="Rechercher..."
           value={searchTerm}

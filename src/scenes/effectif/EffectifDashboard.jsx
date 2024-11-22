@@ -177,19 +177,23 @@ const EffectifDashboard = () => {
         <Grid item xs={12} md={6}>
           <Card sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>Répartition des Effectifs par Age</Typography>
-            <Doughnut data={createDoughnutData(mockData.agePyramidData)} options={{ maintainAspectRatio: true, responsive: true, height: 150 }} />
+            <Doughnut data={createDoughnutData(mockData.agePyramidData)} options={{ maintainAspectRatio: true, responsive: true, height: 50 }} />
           </Card>
         </Grid>
         <Grid item xs={12} md={6}>
           <Card sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>Répartition des Contrats</Typography>
-            <Doughnut data={createDoughnutData(mockData.contractTypesData)} options={{ maintainAspectRatio: true, responsive: true, height: 150 }} />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
+            <Doughnut data={createDoughnutData(mockData.contractTypesData)} options={{ maintainAspectRatio: false, responsive: true, height: 50 }} />
+            </Box>
           </Card>
         </Grid>
         <Grid item xs={12} md={6}>
           <Card sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>Répartition des Agents par Tranche d'Age</Typography>
-            <Bar data={createBarChartData(mockData.pyramidAgeData)} options={{ maintainAspectRatio: true, responsive: true, height: 150 }} />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
+            <Bar data={createBarChartData(mockData.pyramidAgeData)} options={{ maintainAspectRatio: true, responsive: true, height: 50 }} />
+            </Box>
           </Card>
         </Grid>
       </Grid>

@@ -5,6 +5,7 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import { Doughnut } from 'react-chartjs-2';
 import EditIcon from '@mui/icons-material/Edit';
+import InfoIcon from '@mui/icons-material/Info';
 import 'chart.js/auto';
 import { mockData } from '../../data/mockData';
 import * as XLSX from 'xlsx';
@@ -57,23 +58,23 @@ const TrainingDashboard = () => {
     ],
   });
 
-  const renderWidget = (title, value, color, data) => (
+  const renderWidget = (title, value, color, data, IconComponent) => (
     <Card
       sx={{ minWidth: 275, backgroundColor: color, mb: 2, borderRadius: 2, boxShadow: 3, cursor: 'pointer' }}
       onClick={() => handleCardClick(data)}
     >
       <CardContent>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#fff' }}>
-          {title}
-        </Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#fff' }}>
+            {title}
+          </Typography>
+          <IconButton onClick={() => handleCardClick(data)} sx={{ color: '#fff' }}>
+            <InfoIcon />
+          </IconButton>
+        </Box>
         <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#fff' }}>
           {value}
         </Typography>
-        <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={() => handleCardClick(data)} sx={{ color: '#fff' }}>
-            <EditIcon />
-          </IconButton>
-        </Box>
       </CardContent>
     </Card>
   );
@@ -124,16 +125,16 @@ const TrainingDashboard = () => {
 
       <Grid container spacing={2} mb={2}>
         <Grid item xs={12} md={4}>
-          {renderWidget('TOTAL AGENTS', mockData.totalAgents, '#4caf50', mockData.totalAgentsData)}
+          {renderWidget('TOTAL AGENTS', mockData.totalAgents, '#4caf50', mockData.totalAgentsData, InfoIcon)}
         </Grid>
         <Grid item xs={12} md={4}>
-          {renderWidget('FORMATION EN HORS E-LEARNING', mockData.trainingParticipation.inPerson, '#2196f3', mockData.inPersonData)}
+          {renderWidget('FORMATION EN HORS E-LEARNING', mockData.trainingParticipation.inPerson, '#2196f3', mockData.inPersonData, InfoIcon)}
         </Grid>
         <Grid item xs={12} md={4}>
-          {renderWidget('FORMATION E-LEARNING', mockData.trainingParticipation.eLearning, '#ff9800', mockData.eLearningData)}
+          {renderWidget('FORMATION E-LEARNING', mockData.trainingParticipation.eLearning, '#ff9800', mockData.eLearningData, InfoIcon)}
         </Grid>
         <Grid item xs={12} md={4}>
-          {renderWidget('PARTICIPATION GLOBALE', mockData.trainingParticipation.total, '#f44336', mockData.totalParticipationData)}
+          {renderWidget('PARTICIPATION GLOBALE', mockData.trainingParticipation.total, '#f44336', mockData.totalParticipationData, InfoIcon)}
         </Grid>
       </Grid>
 

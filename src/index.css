@@ -114,7 +114,7 @@
 
 .topbar-icons {
   display: flex;
-  align-items: center;
+  align-items: center;                    
 }
 
 .topbar-icons .icon-button {
