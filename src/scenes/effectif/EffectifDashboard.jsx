@@ -5,8 +5,12 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import EditIcon from '@mui/icons-material/Edit';
+import GroupIcon from '@mui/icons-material/Group'; // Pour l'effectif total
+import WcIcon from '@mui/icons-material/Wc'; // Pour l'effectif par genre
+import BusinessIcon from '@mui/icons-material/Business'; // Pour l'effectif par direction
 import 'chart.js/auto';
 import * as XLSX from 'xlsx';
+import { mockData } from '../../data/mockData';
 
 const EffectifDashboard = () => {
   const [filters, setFilters] = useState({ direction: '' });
@@ -67,22 +71,23 @@ const EffectifDashboard = () => {
     ],
   });
 
-  const renderWidget = (title, value, color, data) => (
+  // Modification de la fonction renderWidget pour accepter une icône
+  const renderWidget = (title, value, color, data, IconComponent) => (
     <Card
       sx={{ minWidth: 275, backgroundColor: color, mb: 2, borderRadius: 2, boxShadow: 3, cursor: 'pointer' }}
       onClick={() => handleCardClick(data)}
     >
       <CardContent>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#fff' }}>
-          {title}
-        </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#fff' }}>
-          {value}
-        </Typography>
-        <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={() => handleCardClick(data)} sx={{ color: '#fff' }}>
-            <EditIcon />
-          </IconButton>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box>
+            <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#fff' }}>
+              {title}
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#fff' }}>
+              {value}
+            </Typography>
+          </Box>
+          <IconComponent sx={{ fontSize: 50, color: '#fff' }} />
         </Box>
       </CardContent>
     </Card>
@@ -104,15 +109,15 @@ const EffectifDashboard = () => {
     pyramidAgeData: { labels: ['20-30', '30-40', '40-50'], data: [50, 30, 20] },
   };
 
+  const directionsWithId = mockData.directions.map((direction, index) => ({
+    id: index + 1,
+    ...direction,
+  }));
+
   const filteredDirections = filters.direction
-    ? mockData.directions.filter((direction) => direction.name === filters.direction).map((direction, index) => ({
-        ...direction,
-        id: index,
-    }))
-    : mockData.directions.map((direction, index) => ({
-        ...direction,
-        id: index,
-    }));
+    ? directionsWithId.filter((direction) => direction.name === filters.direction)
+    : directionsWithId;
+
 
   const columns = [
     { field: 'name', headerName: 'Direction', width: 150 },
@@ -163,13 +168,13 @@ const EffectifDashboard = () => {
 
       <Grid container spacing={2} mb={2}>
         <Grid item xs={12} md={4}>
-          {renderWidget('Effectif du Staff', mockData.totalStaff, '#4caf50', mockData.staffData)}
+          {renderWidget('Effectif du Staff', mockData.totalStaff, '#4caf50', mockData.staffData, GroupIcon)}
         </Grid>
         <Grid item xs={12} md={4}>
-          {renderWidget('Effectif par Genre', mockData.genderDistribution, '#2196f3', mockData.genderData)}
+          {renderWidget('Effectif par Genre', mockData.genderDistribution, '#2196f3', mockData.genderData, WcIcon)}
         </Grid>
         <Grid item xs={12} md={4}>
-          {renderWidget('Effectif par Direction', mockData.directions.length, '#ff9800', mockData.directionsData)}
+          {renderWidget('Effectif par Direction', mockData.directions.length, '#ff9800', mockData.directionsData, BusinessIcon)}
         </Grid>
       </Grid>
 
@@ -184,49 +189,67 @@ const EffectifDashboard = () => {
           <Card sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>Répartition des Contrats</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
-            <Doughnut data={createDoughnutData(mockData.contractTypesData)} options={{ maintainAspectRatio: false, responsive: true, height: 50 }} />
-            </Box>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>Répartition des Agents par Tranche d'Age</Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
-            <Bar data={createBarChartData(mockData.pyramidAgeData)} options={{ maintainAspectRatio: true, responsive: true, height: 50 }} />
+              <Doughnut data={createDoughnutData(mockData.contractTypesData)} options={{ maintainAspectRatio: false, responsive: true, height: 50 }} />
             </Box>
           </Card>
         </Grid>
       </Grid>
 
-      <Box mt={3}>
-        <Button variant="contained" color="primary" onClick={downloadExcel}>Exporter en Excel</Button>
-      </Box>
+      <Grid container spacing={2} mt={3}>
+        <Grid item xs={12}>
+          <Card sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>Effectif des Agents par Tranche d'Âge</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
+            <Bar data={createBarChartData(mockData.pyramidAgeData)} options={{ maintainAspectRatio: false }} />
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
 
-      <DataGrid
-        rows={filteredDirections}
-        columns={columns}
-        pageSize={5}
-        disableSelectionOnClick
-        sx={{ height: 400, width: '100%', mt: 3 }}
-      />
+      <Grid container spacing={2} mt={3}>
+        <Grid item xs={12}>
+          <Card sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>Effectif des Directions</Typography>
+            <DataGrid
+              rows={filteredDirections}
+              columns={columns}
+              pageSize={5}
+              autoHeight
+              disableSelectionOnClick
+            />
+          </Card>
+        </Grid>
+      </Grid>
 
-      <Modal open={modalOpen} onClose={handleCloseModal}>
+      <Button variant="contained" color="primary" sx={{ mt: 3 }} onClick={downloadExcel}>
+        Exporter en Excel
+      </Button>
+
+      <Modal
+        open={modalOpen}
+        onClose={handleCloseModal}
+      >
         <Box sx={modalStyle}>
-          <Typography variant="h6" gutterBottom>
-            {modalData?.title}
-          </Typography>
-          <Typography variant="body1">{`Total Formés: ${modalData?.trained}`}</Typography>
-          <Typography variant="body1">{`Non Formés: ${modalData?.notTrained}`}</Typography>
-          <Button variant="contained" onClick={handleCloseModal} sx={{ mt: 2 }}>Fermer</Button>
+          <Typography variant="h6" gutterBottom>Détails de la Direction</Typography>
+          {modalData && (
+            <div>
+              <Typography variant="body1"><strong>Nom:</strong> {modalData.name}</Typography>
+              <Typography variant="body1"><strong>Total:</strong> {modalData.total}</Typography>
+              <Typography variant="body1"><strong>Pas Formés:</strong> {modalData.notTrained}</Typography>
+              <Typography variant="body1"><strong>Formés:</strong> {modalData.trained}</Typography>
+              <Typography variant="body1"><strong>Hors E-Learning:</strong> {modalData.inPerson}</Typography>
+              <Typography variant="body1"><strong>E-Learning:</strong> {modalData.eLearning}</Typography>
+              <Typography variant="body1"><strong>Titre de la formation:</strong> {modalData.title}</Typography>
+            </div>
+          )}
+          <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleCloseModal}>
+            Fermer
+          </Button>
         </Box>
       </Modal>
 
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert severity={snackbarSeverity} onClose={handleCloseSnackbar}>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

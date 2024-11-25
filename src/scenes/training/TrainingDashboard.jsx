@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import {
-  Grid, FormControl, InputLabel, Select, MenuItem, Typography, Box, Button, Card, CardContent, Modal, IconButton, Snackbar, Alert
-} from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import {Grid, FormControl, InputLabel, Select, MenuItem, Typography, Box, Button, Card, CardContent, Modal, IconButton, Snackbar, Alert} from '@mui/material';
+import { DataGrid} from '@mui/x-data-grid';
 import { Doughnut } from 'react-chartjs-2';
-import EditIcon from '@mui/icons-material/Edit';
-import InfoIcon from '@mui/icons-material/Info';
+import GroupIcon from '@mui/icons-material/Group';
+import SchoolIcon from '@mui/icons-material/School';
+import ComputerIcon from '@mui/icons-material/Computer';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import 'chart.js/auto';
 import { mockData } from '../../data/mockData';
 import * as XLSX from 'xlsx';
@@ -69,7 +69,7 @@ const TrainingDashboard = () => {
             {title}
           </Typography>
           <IconButton onClick={() => handleCardClick(data)} sx={{ color: '#fff' }}>
-            <InfoIcon />
+            <IconComponent /> {/* Affichage de l'icône correspondante */}
           </IconButton>
         </Box>
         <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#fff' }}>
@@ -125,16 +125,40 @@ const TrainingDashboard = () => {
 
       <Grid container spacing={2} mb={2}>
         <Grid item xs={12} md={4}>
-          {renderWidget('TOTAL AGENTS', mockData.totalAgents, '#4caf50', mockData.totalAgentsData, InfoIcon)}
+          {renderWidget(
+            'TOTAL AGENTS',
+            mockData.totalAgents,
+            '#4caf50',
+            mockData.totalAgentsData,
+            GroupIcon // Utilisation de l'icône pour les agents
+          )}
         </Grid>
         <Grid item xs={12} md={4}>
-          {renderWidget('FORMATION EN HORS E-LEARNING', mockData.trainingParticipation.inPerson, '#2196f3', mockData.inPersonData, InfoIcon)}
+          {renderWidget(
+            'FORMATION EN HORS E-LEARNING',
+            mockData.trainingParticipation.inPerson,
+            '#2196f3',
+            mockData.inPersonData,
+            SchoolIcon // Utilisation de l'icône pour la formation en hors e-learning
+          )}
         </Grid>
         <Grid item xs={12} md={4}>
-          {renderWidget('FORMATION E-LEARNING', mockData.trainingParticipation.eLearning, '#ff9800', mockData.eLearningData, InfoIcon)}
+          {renderWidget(
+            'FORMATION E-LEARNING',
+            mockData.trainingParticipation.eLearning,
+            '#ff9800',
+            mockData.eLearningData,
+            ComputerIcon // Utilisation de l'icône pour la formation e-learning
+          )}
         </Grid>
         <Grid item xs={12} md={4}>
-          {renderWidget('PARTICIPATION GLOBALE', mockData.trainingParticipation.total, '#f44336', mockData.totalParticipationData, InfoIcon)}
+          {renderWidget(
+            'PARTICIPATION GLOBALE',
+            mockData.trainingParticipation.total,
+            '#f44336',
+            mockData.totalParticipationData,
+            AssessmentIcon // Utilisation de l'icône pour la participation globale
+          )}
         </Grid>
       </Grid>
 
@@ -201,13 +225,17 @@ const TrainingDashboard = () => {
             Détails
           </Typography>
           <Typography id="modal-description" sx={{ mt: 2 }}>
-            {JSON.stringify(modalData, null, 2)}
+            {/* Ajoute ici les détails spécifiques du contenu de la modal */}
+            {modalData ? JSON.stringify(modalData, null, 2) : 'Aucune donnée disponible.'}
           </Typography>
-          <Button onClick={handleCloseModal} sx={{ mt: 2 }}>Fermer</Button>
         </Box>
       </Modal>
 
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
         <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
