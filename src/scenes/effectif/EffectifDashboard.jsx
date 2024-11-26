@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import {
-  Grid, FormControl, InputLabel, Select, MenuItem, Typography, Box, Button, Card, CardContent, Modal, IconButton, Snackbar, Alert
+  Grid, FormControl, InputLabel, Select, MenuItem, Typography, Box, Button, Card, CardContent, Modal, Snackbar, Alert
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Doughnut, Bar } from 'react-chartjs-2';
-import EditIcon from '@mui/icons-material/Edit';
 import GroupIcon from '@mui/icons-material/Group'; // Pour l'effectif total
 import WcIcon from '@mui/icons-material/Wc'; // Pour l'effectif par genre
 import BusinessIcon from '@mui/icons-material/Business'; // Pour l'effectif par direction
@@ -13,7 +12,7 @@ import * as XLSX from 'xlsx';
 import { mockData } from '../../data/mockData';
 
 const EffectifDashboard = () => {
-  const [filters, setFilters] = useState({ direction: '' });
+  const [filters, setFilters] = useState({ direction: '', employeur: '' });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -41,13 +40,25 @@ const EffectifDashboard = () => {
   };
 
   const downloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredDirections);
+    const worksheet = XLSX.utils.json_to_sheet(filteredData());
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Effectif');
     XLSX.writeFile(workbook, 'effectif_dashboard.xlsx');
     setSnackbarMessage('Données exportées avec succès en Excel');
     setSnackbarSeverity('success');
     setOpenSnackbar(true);
+  };
+
+  // Fonction pour filtrer les données en fonction des filtres
+  const filteredData = () => {
+    let filtered = mockData.directions || [];
+    if (filters.employeur) {
+      filtered = filtered.filter((data) => data.employeur === filters.employeur);
+    }
+    if (filters.direction) {
+      filtered = filtered.filter((data) => data.name === filters.direction);
+    }
+    return filtered;
   };
 
   const createDoughnutData = (data) => ({
@@ -71,7 +82,7 @@ const EffectifDashboard = () => {
     ],
   });
 
-  // Modification de la fonction renderWidget pour accepter une icône
+  // Fonction de rendu des widgets
   const renderWidget = (title, value, color, data, IconComponent) => (
     <Card
       sx={{ minWidth: 275, backgroundColor: color, mb: 2, borderRadius: 2, boxShadow: 3, cursor: 'pointer' }}
@@ -107,6 +118,12 @@ const EffectifDashboard = () => {
     agePyramidData: { labels: ['20-30', '30-40', '40-50'], datasets: [{ data: [20, 50, 30], backgroundColor: ['#ffcd56', '#ff9f40', '#ff5733'] }] },
     contractTypesData: { labels: ['Permanent', 'Temporary'], datasets: [{ data: [70, 30], backgroundColor: ['#8e44ad', '#3498db'] }] },
     pyramidAgeData: { labels: ['20-30', '30-40', '40-50'], data: [50, 30, 20] },
+    employersData: {
+      Bensizwe: { total: 10, male: 6, female: 4 },
+      ITM: { total: 15, male: 8, female: 7 },
+      OM: { total: 20, male: 12, female: 8 },
+      ORDC: { total: 25, male: 15, female: 10 },
+    },
   };
 
   const directionsWithId = mockData.directions.map((direction, index) => ({
@@ -168,7 +185,7 @@ const EffectifDashboard = () => {
 
       <Grid container spacing={2} mb={2}>
         <Grid item xs={12} md={4}>
-          {renderWidget('Effectif du Staff', mockData.totalStaff, '#4caf50', mockData.staffData, GroupIcon)}
+          {renderWidget('Effectif du Staff', mockData.totalStaff, '#4caf50', mockData.employersData, GroupIcon)}
         </Grid>
         <Grid item xs={12} md={4}>
           {renderWidget('Effectif par Genre', mockData.genderDistribution, '#2196f3', mockData.genderData, WcIcon)}
@@ -200,7 +217,7 @@ const EffectifDashboard = () => {
           <Card sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>Effectif des Agents par Tranche d'Âge</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 100 }}>
-            <Bar data={createBarChartData(mockData.pyramidAgeData)} options={{ maintainAspectRatio: false }} />
+              <Bar data={createBarChartData(mockData.pyramidAgeData)} options={{ maintainAspectRatio: false }} />
             </Box>
           </Card>
         </Grid>
@@ -230,16 +247,28 @@ const EffectifDashboard = () => {
         onClose={handleCloseModal}
       >
         <Box sx={modalStyle}>
-          <Typography variant="h6" gutterBottom>Détails de la Direction</Typography>
+          <Typography variant="h6" gutterBottom>Détails de l'Effectif</Typography>
           {modalData && (
             <div>
-              <Typography variant="body1"><strong>Nom:</strong> {modalData.name}</Typography>
-              <Typography variant="body1"><strong>Total:</strong> {modalData.total}</Typography>
-              <Typography variant="body1"><strong>Pas Formés:</strong> {modalData.notTrained}</Typography>
-              <Typography variant="body1"><strong>Formés:</strong> {modalData.trained}</Typography>
-              <Typography variant="body1"><strong>Hors E-Learning:</strong> {modalData.inPerson}</Typography>
-              <Typography variant="body1"><strong>E-Learning:</strong> {modalData.eLearning}</Typography>
-              <Typography variant="body1"><strong>Titre de la formation:</strong> {modalData.title}</Typography>
+              {/* Affichage spécifique des données selon le type d'effectif */}
+              {modalData === mockData.employersData ? (
+                <div>
+                  <Typography variant="body1"><strong>Bensizwe:</strong> {mockData.employersData.Bensizwe.total} (Homme: {mockData.employersData.Bensizwe.male}, Femme: {mockData.employersData.Bensizwe.female})</Typography>
+                  <Typography variant="body1"><strong>ITM:</strong> {mockData.employersData.ITM.total} (Homme: {mockData.employersData.ITM.male}, Femme: {mockData.employersData.ITM.female})</Typography>
+                  <Typography variant="body1"><strong>OM:</strong> {mockData.employersData.OM.total} (Homme: {mockData.employersData.OM.male}, Femme: {mockData.employersData.OM.female})</Typography>
+                  <Typography variant="body1"><strong>ORDC:</strong> {mockData.employersData.ORDC.total} (Homme: {mockData.employersData.ORDC.male}, Femme: {mockData.employersData.ORDC.female})</Typography>
+                </div>
+              ) : modalData === mockData.genderData ? (
+                <div>
+                  <Typography variant="body1"><strong>Homme:</strong> {mockData.genderData[0].data[0]}%</Typography>
+                  <Typography variant="body1"><strong>Femme:</strong> {mockData.genderData[1].data[0]}%</Typography>
+                </div>
+              ) : modalData === mockData.directionsData ? (
+                <div>
+                  <Typography variant="body1"><strong>IT:</strong> {mockData.directionsData[0].data[0]}</Typography>
+                  <Typography variant="body1"><strong>HR:</strong> {mockData.directionsData[1].data[0]}</Typography>
+                </div>
+              ) : null}
             </div>
           )}
           <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleCloseModal}>
