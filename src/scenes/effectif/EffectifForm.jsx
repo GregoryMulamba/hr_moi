@@ -153,115 +153,107 @@ const EffectifForm = ({
       [name]: "", // Efface l'erreur lors de la modification du champ
     }));
   };
-  const validateForm = () => {
-    let valid = true;
-    let newErrors = {};
-
-    // Vérification des champs requis
-    if (!formData.cuid) {
-      newErrors.cuid = "Le CUID est requis";
-      valid = false;
-    }
-    if (!formData.name) {
-      newErrors.name = "Le nom est requis";
-      valid = false;
-    }
-    if (!formData.email) {
-      newErrors.email = "L'email est requis";
-      valid = false;
-    }
-    if (!formData.phone) {
-      newErrors.phone = "Le numéro de téléphone est requis";
-      valid = false;
-    }
-    if (!formData.prenom) {
-      newErrors.prenom = "Le prénom est requis";
-      valid = false;
-    }
-    if (!formData.postnom) {
-      newErrors.postnom = "Le postnom est requis";
-      valid = false;
-    }
-    if (!formData.direction) {
-      newErrors.direction = "La direction est requise";
-      valid = false;
-    }
-    if (!formData.employeur) {
-      newErrors.employeur = "L'employeur est requis";
-      valid = false;
-    }
-    if (!formData.genre) {
-      newErrors.genre = "Le genre est requis";
-      valid = false;
-    }
-    if (!formData.date_naissance) {
-      newErrors.date_naissance = "La date de naissance est requise";
-      valid = false;
-    }
-    if (!formData.contrat) {
-      newErrors.contrat = "Le contrat est requis";
-      valid = false;
-    }
-    if (!formData.num_mat) {
-      newErrors.num_mat = "Le numéro matricule est requis";
-      valid = false;
-    }
-    // if (!formData.age) {
-    //   newErrors.age = "L'âge est requis";
-    //   valid = false;
-    // }
-    if (!formData.statut_contrat) {
-      newErrors.statut_contrat = "Le statut du contrat est requis";
-      valid = false;
-    }
-    if (!formData.fonction) {
-      newErrors.fonction = "La fonction est requise";
-      valid = false;
-    }
-    if (!formData.anciennete_annee) {
-      newErrors.anciennete_annee = "L'ancienneté en années est requise";
-      valid = false;
-    }
-    if (!formData.anciennete_mois) {
-      newErrors.anciennete_mois = "L'ancienneté en mois est requise";
-      valid = false;
-    }
-    if (!formData.nationalite) {
-      newErrors.nationalite = "La nationalité est requise";
-      valid = false;
-    }
-    if (!formData.lieu_embauche) {
-      newErrors.lieu_embauche = "Le lieu d'embauche est requis";
-      valid = false;
-    }
-    if (!formData.lieu_affectation) {
-      newErrors.lieu_affectation = "Le lieu d'affectation est requis";
-      valid = false;
-    }
-    if (!formData.grade) {
-      newErrors.grade = "Le grade est requis";
-      valid = false;
-    }
-    if (!formData.date_fin_cdd) {
-      newErrors.date_fin_cdd = "La date de fin du CDD est requise";
-      valid = false;
-    }
-    if (!formData.date_embauche) {
-      newErrors.date_embauche = "La date d'embauche est requise";
-      valid = false;
-    }
-    // if (!formData.dure_cdd) {
-    //   newErrors.dure_cdd = "La durée du CDD est requise";
-    //   valid = false;
-    // }
-    if (!formData.periode_essai) {
-      newErrors.periode_essai = "La période d'essai est requise";
-      valid = false;
-    }
-    if (!formData.manager_name) {
-      newErrors.manager_name = "Le nom du manager est requis";
-      valid = false;
-    }
+  
+  
+    const validateForm = () => {
+      let valid = true;
+      const newErrors = {};
+    
+      if (!formData.cuid) {
+        newErrors.cuid = "Le CUID est requis";
+        valid = false;
+      }
+      if (!formData.name) {
+        newErrors.name = "Le nom est requis";
+        valid = false;
+      }
+      if (!formData.email) {
+        newErrors.email = "L'email est requis";
+        valid = false;
+      }
+      if (!formData.phone) {
+        newErrors.phone = "Le numéro de téléphone est requis";
+        valid = false;
+      }
+      if (!formData.prenom) {
+        newErrors.prenom = "Le prénom est requis";
+        valid = false;
+      }
+      if (!formData.postnom) {
+        newErrors.postnom = "Le postnom est requis";
+        valid = false;
+      }
+      if (!formData.direction) {
+        newErrors.direction = "La direction est requise";
+        valid = false;
+      }
+      if (!formData.employeur) {
+        newErrors.employeur = "L'employeur est requis";
+        valid = false;
+      }
+      if (!formData.genre) {
+        newErrors.genre = "Le genre est requis";
+        valid = false;
+      }
+      if (!formData.date_naissance) {
+        newErrors.date_naissance = "La date de naissance est requise";
+        valid = false;
+      }
+      if (!formData.contrat) {
+        newErrors.contrat = "Le contrat est requis";
+        valid = false;
+      }
+      if (!formData.num_mat) {
+        newErrors.num_mat = "Le numéro matricule est requis";
+        valid = false;
+      }
+      if (!formData.statut_contrat) {
+        newErrors.statut_contrat = "Le statut du contrat est requis";
+        valid = false;
+      }
+      if (!formData.fonction) {
+        newErrors.fonction = "La fonction est requise";
+        valid = false;
+      }
+      if (!formData.anciennete_annee) {
+        newErrors.anciennete_annee = "L'ancienneté en années est requise";
+        valid = false;
+      }
+      if (!formData.anciennete_mois) {
+        newErrors.anciennete_mois = "L'ancienneté en mois est requise";
+        valid = false;
+      }
+      if (!formData.nationalite) {
+        newErrors.nationalite = "La nationalité est requise";
+        valid = false;
+      }
+      if (!formData.lieu_embauche) {
+        newErrors.lieu_embauche = "Le lieu d'embauche est requis";
+        valid = true; // Champ facultatif
+      }
+      if (!formData.lieu_affectation) {
+        newErrors.lieu_affectation = "Le lieu d'affectation est requis";
+        valid = false;
+      }
+      if (!formData.grade) {
+        newErrors.grade = "Le grade est requis";
+        valid = false;
+      }
+      if (!formData.date_fin_cdd) {
+        newErrors.date_fin_cdd = ""; // Pas d'erreur pour champ facultatif
+      }
+      if (!formData.date_embauche) {
+        newErrors.date_embauche = ""; // Pas d'erreur pour champ facultatif
+      }
+      if (!formData.periode_essai) {
+        newErrors.periode_essai = "La période d'essai est requise";
+        valid = false;
+      }
+      if (!formData.manager_name) {
+        newErrors.manager_name = "Le nom du manager est requis";
+        valid = false;
+      }
+    
     // if (!formData.date_depart) {
     //   newErrors.date_depart = "La date de départ est requise";
     //   valid = false;
@@ -692,7 +684,7 @@ const EffectifForm = ({
                   helperText={errors.date_embauche}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   label="Durée du Contrat"
@@ -703,7 +695,7 @@ const EffectifForm = ({
                   error={!!errors.dure_contrat}
                   helperText={errors.dure_contrat}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sm={6}>
                 <FormControlLabel
                   control={
@@ -730,7 +722,7 @@ const EffectifForm = ({
         </DialogActions>
       </Dialog>
 
-      <Loading isSuccess={isSuccess} />
+     
     </>
   );
 };

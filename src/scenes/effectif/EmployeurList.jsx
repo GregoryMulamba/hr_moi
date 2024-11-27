@@ -194,7 +194,7 @@ const EmployeurList = () => {
 
   return (
     <Box m="20px">
-      <Header title="Contrat List" subtitle="Liste de toutes les directions" />
+      <Header title="Employeur List" subtitle="Liste d" />
       <Box m="10px 0">
         <EmployeurForm
           formData={formData}

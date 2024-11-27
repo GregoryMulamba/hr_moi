@@ -338,8 +338,8 @@ const EffectifList = () => {
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setEditMode(false);
+    setOpenDialog(true);
+    setEditMode(true);
     setFormData({
       id: "",
       ciud: "",

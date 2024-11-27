@@ -268,7 +268,7 @@ const RequestList = () => {
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
+    setOpenDialog(true);
   };
 
   return (
