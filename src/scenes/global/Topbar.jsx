@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined"; 
 import {
   Box,
   IconButton,
@@ -18,6 +17,7 @@ import {
   LogoutOutlined as LogoutIcon,
   Search as SearchIcon,
 } from "@mui/icons-material";
+import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import { tokens } from "../../theme";
 import { Link, useNavigate } from "react-router-dom"; // Utilisation pour la redirection
 
@@ -39,7 +39,7 @@ const Topbar = () => {
 
   // Fonction pour gérer la recherche
   const handleSearch = (event) => {
-    if (event.key === 'Enter' || event.type === 'click') {
+    if (event.key === "Enter" || event.type === "click") {
       // Exemple de redirection vers une page de résultats
       navigate(`/search?query=${searchTerm}`);
 
@@ -59,9 +59,7 @@ const Topbar = () => {
         backgroundColor: colors.primary[500],
         height: "60px",
         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-
+      }}>
       {/* Center Section (Search Bar) */}
       <Box
         display="flex"
@@ -74,9 +72,8 @@ const Topbar = () => {
           "&:hover": {
             backgroundColor: colors.primary[300],
           },
-        }}
-      >
-        <SearchIcon sx={{ color: "white", mr: 1 }} onClick={handleSearch} />
+        }}>
+        <SearchIcon sx={{ color: "black", mr: 1 }} onClick={handleSearch} />
         <InputBase
           placeholder="Rechercher..."
           value={searchTerm}
@@ -106,8 +103,7 @@ const Topbar = () => {
           <IconButton
             aria-label="User Menu"
             onClick={handleMenuOpen}
-            sx={{ color: "white" }}
-          >
+            sx={{ color: "white" }}>
             <ProfileIcon fontSize="large" />
           </IconButton>
         </Tooltip>
@@ -127,16 +123,27 @@ const Topbar = () => {
                 backgroundColor: colors.primary[400],
               },
             },
-          }}
-        >
-       
-          <MenuItem onClick={handleMenuClose} sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box display="flex" alignItems="center" className="topbar-icons">
-        <IconButton component={Link} to="/LOGIN" className="icon-button">
-        login
-        <LoginOutlinedIcon/>
-        </IconButton>
-      </Box>
+          }}>
+          <MenuItem
+            onClick={handleMenuClose}
+            sx={{ display: "flex", alignItems: "center" }}>
+            <ProfileIcon sx={{ mr: 1 }} />
+            <Typography>Profil</Typography>
+          </MenuItem>
+          <MenuItem
+            onClick={handleMenuClose}
+            sx={{ display: "flex", alignItems: "center" }}
+            component={Link}
+            to="/login" // redirection vers la page login
+          >
+            <LoginOutlinedIcon sx={{ mr: 1 }} />
+            <Typography>Connexion</Typography>
+          </MenuItem>
+          <MenuItem
+            onClick={handleMenuClose}
+            sx={{ display: "flex", alignItems: "center" }}>
+            <LogoutIcon sx={{ mr: 1 }} />
+            <Typography>Déconnexion</Typography>
           </MenuItem>
           
         </Menu>
