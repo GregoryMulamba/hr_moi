@@ -73,6 +73,12 @@ const Sidebar = ({ children }) => {
     { path: '/survey-results', name: 'Survey Results', icon: <FaPoll /> },
   ];
 
+  const menuItemsRequest = [
+    //{ path: '/RequestDashboard', name: 'Request Dashbord', icon: <FaPoll /> },
+    //{ path: '/requestlist', name: 'Request List', icon: <FaPoll /> },
+    { path: '/requestform', name: 'Request', icon: <FaPoll /> },
+  ];
+
   return (
     <div className={`app ${!isOpen ? 'collapsed' : ''}`}>
       <div className={`sidebar ${!isOpen ? 'collapsed' : ''}`}>
@@ -231,6 +237,27 @@ const Sidebar = ({ children }) => {
               ))}
             </List>
           </Collapse>
+
+          {/* Request Module Dropdown */}
+          <MenuItem onClick={() => handleToggle('request')}>
+            <ListItemIcon>
+              <FaPoll />
+            </ListItemIcon>
+            <ListItemText primary="Request" />
+            {openModule === 'request' ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </MenuItem>
+          <Collapse in={openModule === 'request'} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {menuItemsRequest.map((item, index) => (
+                <NavLink to={item.path} key={index} className="link">
+                  <MenuItem>
+                    <ListItemText primary={item.name} />
+                  </MenuItem>
+                </NavLink>
+              ))}
+            </List>
+          </Collapse>
+
         </div>
       </div>
       <main className={`content ${!isOpen ? 'collapsed' : ''}`}>{children}</main>
