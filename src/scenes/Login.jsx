@@ -6,20 +6,20 @@ const LoginForm = () => {
   const [cuid, setCuid] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Initialiser le hook useNavigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError(""); // Réinitialiser l'erreur avant chaque tentative
     try {
       await loginUser(cuid, password);
       console.log("Connexion réussie");
-      navigate("/dashboard"); // Rediriger vers le Dashboard
+      navigate("/dashboard"); // Redirection vers le Dashboard après connexion réussie
     } catch (error) {
-      console.error("Erreur de connexion:", error);
+      console.error("Erreur de connexion:", error.message);
       setError("Nom d'utilisateur ou mot de passe incorrect");
     }
   };
-
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>

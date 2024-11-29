@@ -11,35 +11,30 @@ const getToken = () => {
 // Fonction pour se connecter et récupérer le token
 export const loginUser = async (cuid, password) => {
   try {
-    // Envoyer la requête pour l'authentification
-    const response = await axios.post(`${API_URL}/user/public/auth/`, {
+    const response = await axios.post(`${API_URL}/user/public/login/`, {
       cuid: cuid,
       password: password,
     });
 
-    // Vérifier si la réponse contient un token
+    // Vérifier si le token est présent dans la réponse
     if (response.data && response.data.access) {
       const token = response.data.access;
 
       // Stocker le token dans le localStorage
-      localStorage.setItem('access_token', token);
+      localStorage.setItem("access_token", token);
 
-      console.log('Token stocké dans localStorage:', token);  // Debugging
-
-      return response;
+      console.log("Token stocké dans localStorage:", token);
+      return response.data; // Retourner uniquement les données pertinentes
     } else {
-      console.error('Aucun token reçu dans la réponse');
-      throw new Error('Token d\'accès manquant dans la réponse');
+      console.error("Aucun token reçu dans la réponse");
+      throw new Error("Token d'accès manquant dans la réponse");
     }
   } catch (error) {
-    console.error('Erreur lors de la connexion:', error);
+    console.error("Erreur lors de la connexion:", error.response?.data || error.message);
     throw error;
   }
 };
 
-
-
-// Fonction pour effectuer une requête POST avec un token
 export const postDataToAPI = async (endpoint, data) => {
   try {
     const token = getToken(); // Récupérer le token stocké
@@ -49,13 +44,11 @@ export const postDataToAPI = async (endpoint, data) => {
       throw new Error('Token d\'accès manquant');
     }
 
-    // Ajouter le token dans les en-têtes
     const headers = {
       'Authorization': `JWT ${token}`,
       // 'Content-Type': 'application/json',
     };
-
-    // Effectuer la requête POST avec le token d'autorisation
+    // la requête POST avec le token d'autorisation
     const response = await axios.post(`${API_URL}${endpoint}`, data, { headers });
     return response;
   } catch (error) {
@@ -67,29 +60,22 @@ export const postDataToAPI = async (endpoint, data) => {
 // Fonction pour effectuer une requête GET avec un token
 export const fetchDataFromAPI = async (endpoint) => {
   try {
-    const token = getToken(); // Récupérer le token stocké
-
+    const token = getToken(); 
     // Vérifie si le token existe
     if (!token) {
       throw new Error('Token d\'accès manquant');
     }
-
-    // Ajouter le token dans les en-têtes
     const headers = {
       'Authorization': `JWT ${token}`,
     };
-
     const response = await axios.get(`${API_URL}${endpoint}`, { headers });
     // console.log('resultat:', response);
-
     return response;
   } catch (error) {
     console.error('Erreur lors de la récupération des données de l\'API :', error);
     return {}; 
   }
 };
-
-// Fonction pour la mise à jour des données (PUT)
 export const updateDataToAPI = async (endpoint, data) => {
   try {
     const token = getToken(); // Récupérer le token stocké
