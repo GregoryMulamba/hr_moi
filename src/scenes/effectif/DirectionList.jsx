@@ -18,7 +18,10 @@ const DirectionList = () => {
   const [directionData, setDirectionData] = useState([]);
   const [formData, setFormData] = useState({
     id: "",
-    nom: "",
+    name: "",
+    short_name: "",
+    is_directeur: "",
+    hrbp_id: "",
     description: "",
   });
   const [editMode, setEditMode] = useState(false);
@@ -77,6 +80,8 @@ const DirectionList = () => {
         id: "",
         name: "",
         short_name: "",
+        is_directeur: "",
+        hrbp_id: "",
         description: "",
       });
       setSnackbarSeverity("success");
@@ -150,6 +155,8 @@ const DirectionList = () => {
     { field: "name", headerName: "Nom", width: 150 },
     { field: "short_name", headerName: "Short name", width: 150 },
     { field: "description", headerName: "Description", width: 200 },
+    { field: "hrbp_id", headerName: "HRBP", width: 150 },
+    { field: "is_directeur", headerName: "Directeur", width: 200 },
     {
       field: "actions",
       headerName: "Actions",
