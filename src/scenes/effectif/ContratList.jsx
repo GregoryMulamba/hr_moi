@@ -74,9 +74,16 @@ const ContratList = () => {
       setEditMode(false);
       setOpenDialog(false);
       setFormData({
-        id: "",
-        type_contrat: "",
-        is_active: "",
+        id: '',
+        type_contrat: '',
+        nature_contrat: '',
+        filiere_metier: '',
+        probation_end_date: '', // Nouvelle date de probation
+        agent_name: '', // ID de l'agent
+        date_debut: '', // Date de début
+        date_fin_cdd: '', // Date de fin pour CDD
+        document: '', // Le champ pour le fichier
+        is_active: '',
       });
       setSnackbarSeverity("success");
       setOpenSnackbar(true);
@@ -147,7 +154,14 @@ const ContratList = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 0 },
     { field: "type_contrat", headerName: "Type contrat", width: 100 },
-    { field: "is_active", headerName: "actif", width: 100 },
+    { field: "nature_contrat", headerName: "nature_contrat", width: 100 },
+    { field: "filiere_metier", headerName: "filiere_metier", width: 100 },
+    { field: "probation_end_date", headerName: "probation_end_date", width: 100 },
+    { field: "agent_name", headerName: "agent_name", width: 100 },
+    { field: "date_debut", headerName: "date_debut", width: 100 },
+    { field: "date_fin_cdd", headerName: "date_fin_cdd", width: 100 },
+    { field: "document", headerName: "document", width: 100 },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -187,9 +201,16 @@ const ContratList = () => {
     setOpenDialog(false);
     setEditMode(false);
     setFormData({
-      id: "",
-      type_contrat: "",
-      is_active: "",
+      id: '',
+      type_contrat: '',
+      nature_contrat: '',
+      filiere_metier: '',
+      probation_end_date: '', // Nouvelle date de probation
+      agent_name: '', // ID de l'agent
+      date_debut: '', // Date de début
+      date_fin_cdd: '', // Date de fin pour CDD
+      document: '', // Le champ pour le fichier
+      is_active: '',
     });
   };
 
