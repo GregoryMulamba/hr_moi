@@ -10,16 +10,32 @@ import {
   DialogTitle,
   Typography,
   Slide,
+  Menu,
+  MenuItem,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import * as XLSX from "xlsx";
 import RequestForm from "./RequestForm";
 import { fetchDataFromAPI, updateDataToAPI } from "../../api";
-import PanToolIcon from "@mui/icons-material/PanTool";
 import TransferIcon from "@mui/icons-material/Send";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ValiderRequestModal from "./Modals/ValiderRequestModal";
 import RejeterRequestModal from "./Modals/RejeterRequestModal";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import CloseIcon from "@mui/icons-material/Close";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import DescriptionIcon from "@mui/icons-material/Description";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+
+
+
 // Animation pour la modale
 const Transition = React.forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
@@ -41,6 +57,12 @@ const DocumentDetailDialog = ({ open, onClose, document }) => (
           Télécharger le document
         </a>
       </Typography>
+      <Typography>
+        <strong>Extension :</strong> {document.extension.toUpperCase()}
+      </Typography>
+      <Typography>
+        <strong>Type de fichier :</strong> {getDocumentIcon(document.extension)}
+      </Typography>
     </DialogContent>
     <DialogActions>
       <Button variant="contained" color="inherit" onClick={onClose}>
@@ -52,6 +74,8 @@ const DocumentDetailDialog = ({ open, onClose, document }) => (
 
 const RequestList = () => {
   const [requests, setRequests] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(anchorEl);
   const [alert, setAlert] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -59,6 +83,16 @@ const RequestList = () => {
   const [currentDocument, setCurrentDocument] = useState(null);
   const [openValiderModal, setOpenValiderModal] = useState(false);
   const [openRejeterModal, setOpenRejeterModal] = useState(false);
+
+  const getDocumentIcon = (extension) => {
+    switch (extension.toLowerCase()) {
+      case 'pdf': return <PictureAsPdfIcon />;
+      case 'docx':
+      case 'doc': return <DescriptionIcon />;
+      case 'xlsx': return <InsertDriveFileIcon />;
+      default: return <InsertDriveFileIcon />;
+    }
+  };
 
 
   const formatDate = (dateString) =>
@@ -76,8 +110,8 @@ const RequestList = () => {
         if (response.data && Array.isArray(response.data.results)) {
           const transformedData = response.data.results.map(
             (demande, index) => ({
-              id: index + 1,
-              id: demande.id,
+              id: demande.id + 1,
+              // id: demande.id,
               assigned_to: demande.assigned_to || "Non assigné",
               groupe: demande.groupe || "Non défini",
               ticket: demande.ticket,
@@ -168,14 +202,22 @@ const RequestList = () => {
       });
     }
   };
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  const handleOpenModal = (request) => {
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleOpenValiderModal = (request) => {
     setSelectedRequest(request);
     setOpenValiderModal(true);
-    setOpenRejeterModal(true);
-
   };
-  // const handleValiderRequest = async (id) => {
+
+  const handleOpenRejeterModal = (request) => {
+    setSelectedRequest(request);
+    setOpenRejeterModal(true);
+  };
   //   try {
   //     const response = await updateDataToAPI(
   //       `/demande/Demande/${id}/valider_demande/`,
@@ -233,9 +275,12 @@ const RequestList = () => {
   };
 
   const handleDocumentClick = (docUrl) => {
+    const fileExtension = docUrl.split('.').pop();  // Extraction de l'extension
+    const fileName = docUrl.split("/").pop(); // Nom du fichier
     setCurrentDocument({
-      name: docUrl.split("/").pop(), // Nom du fichier
+      name: fileName,
       url: docUrl,
+      extension: fileExtension,
     });
     setDocumentDialogOpen(true);
   };
@@ -317,8 +362,9 @@ const RequestList = () => {
         onClose={handleCloseDialog}
         maxWidth="md"
         fullWidth
-        TransitionComponent={Transition}>
-        <DialogTitle sx={{ bgcolor: "primary.main", color: "white" }}>
+        TransitionComponent={Transition}
+      >
+        <DialogTitle sx={{ bgcolor: "orange", color: "white" }}>
           Détails de la Demande
         </DialogTitle>
         <DialogContent sx={{ p: 3 }}>
@@ -329,8 +375,9 @@ const RequestList = () => {
               gap={2}
               sx={{
                 "& .MuiTypography-root": { mb: 1 },
-                "& .detail-label": { fontWeight: "bold", color: "info.main" },
-              }}>
+                "& .detail-label": { fontWeight: "bold", color: "black" },
+              }}
+            >
               <Typography>
                 <span className="detail-label">ID:</span> {selectedRequest.id}
               </Typography>
@@ -367,7 +414,8 @@ const RequestList = () => {
                       variant="text"
                       color="info"
                       onClick={() => handleDocumentClick(doc)}
-                      sx={{ textTransform: "none", p: 0 }}>
+                      sx={{ textTransform: "none", p: 0 }}
+                    >
                       {doc.split("/").pop()}
                     </Button>
                   ))
@@ -393,89 +441,117 @@ const RequestList = () => {
             </Box>
           )}
         </DialogContent>
-        <DialogActions sx={{ justifyContent: "space-between", p: 3 }}>
-          <Box>
-
-            <div>
-              {selectedRequest ? (
+        <DialogActions sx={{ p: 3 }}>
+          {/* Section principale */}
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Tooltip title="Valider">
                 <Button
-                  variant="contained"
-                  color="success"
-                  onClick={() => handleOpenModal(selectedRequest)}
-                  sx={{ mr: 2 }}
+                  variant="outlined"
+                  startIcon={<CheckCircleIcon />}
+                  sx={{
+                    borderColor: "#4caf50",
+                    color: "#4caf50",
+                    "&:hover": { borderColor: "#388e3c", backgroundColor: "#e8f5e9" },
+                  }}
+                  onClick={() => handleOpenValiderModal(selectedRequest)}
                 >
-                  Valider 
+                  Valider
                 </Button>
-              ) : (
-                <p>Aucune demande sélectionnée.</p>
-              )}
+                <ValiderRequestModal
+                  open={openValiderModal}
+                  onClose={() => setOpenValiderModal(false)}
+                  selectedRequest={selectedRequest}
+                  requests={requests}
+                  setRequests={setRequests}
+                  setAlert={setAlert}
+                />
+              </Tooltip>
 
-              {/* Modal pour valider la demande */}
-              <ValiderRequestModal
-                open={openValiderModal}
-                onClose={() => setOpenValiderModal(false)}
-                selectedRequest={selectedRequest}
-                requests={[selectedRequest]}
-                setRequests={(updatedRequests) => console.log('Updated:', updatedRequests)}
-                setAlert={setAlert}
-              />
-            </div>
-            <div>
-              {selectedRequest ? (
+              <Tooltip title="Réjeter">
                 <Button
-                  variant="contained"
-                  color="warning"
-                  onClick={() => handleOpenModal(selectedRequest)}
-                  sx={{ mr: 2 }}
+                  variant="outlined"
+                  startIcon={<CancelIcon />}
+                  sx={{
+                    borderColor: "#f44336",
+                    color: "#f44336",
+                    "&:hover": { borderColor: "#d32f2f", backgroundColor: "#ffebee" },
+                  }}
+                  onClick={() => handleOpenRejeterModal(selectedRequest)}
                 >
                   Réjeter
                 </Button>
-              ) : (
-                <p>Aucune demande sélectionnée.</p>
-              )}
+                <RejeterRequestModal
+                  open={openRejeterModal}
+                  onClose={() => setOpenRejeterModal(false)}
+                  selectedRequest={selectedRequest}
+                  requests={requests}
+                  setRequests={setRequests}
+                  setAlert={setAlert}
+                />
+              </Tooltip>
+            </Box>
 
-              {/* Modal pour valider la demande */}
-              <RejeterRequestModal
-                open={openValiderModal}
-                onClose={() => setOpenRejeterModal(false)}
-                selectedRequest={selectedRequest}
-                requests={[selectedRequest]}
-                setRequests={(updatedRequests) => console.log('Updated:', updatedRequests)}
-                setAlert={setAlert}
-              />
-            </div>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => handleTakeRequest(selectedRequest.id)}
-              sx={{ mr: 2 }}>
-              Prendre en main
-            </Button>
+            {/* Section secondaire avec menu déroulant */}
+            <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+              <Tooltip title="Autres actions">
+                <IconButton
+                  size="large"
+                  sx={{ backgroundColor: "#f0f0f0", color: "#000", "&:hover": { backgroundColor: "#e0e0e0" } }}
+                  onClick={handleMenuOpen}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+              </Tooltip>
 
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => handleTransfertByMembreRequest(selectedRequest.id)}
-              sx={{ mr: 2 }}>
-              Passer la main
-            </Button>
-
-            <Button
-              variant="contained"
-              color="info"
-              onClick={() => handleTransfertRequest(selectedRequest.id)}>
-              Assigner
-            </Button>
+              <Menu
+                anchorEl={anchorEl}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+                PaperProps={{
+                  style: {
+                    maxHeight: 200,
+                    width: "20ch",
+                  },
+                }}
+              >
+                <MenuItem onClick={() => handleTakeRequest(selectedRequest.id)}>
+                  <HandshakeIcon sx={{ mr: 1 }} />
+                  Prendre la main
+                </MenuItem>
+                <MenuItem onClick={() => handleTransfertByMembreRequest(selectedRequest.id)}>
+                  <ArrowForwardIcon sx={{ mr: 1 }} />
+                  Passer la main
+                </MenuItem>
+                <MenuItem onClick={() => handleTransfertRequest(selectedRequest.id)}>
+                  <AssignmentIcon sx={{ mr: 1 }} />
+                  Assigner
+                </MenuItem>
+              </Menu>
+            </Box>
           </Box>
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={handleCloseDialog}
-            sx={{ ml: 2 }}>
-            Fermer
-          </Button>
+
+          {/* Bouton Fermer */}
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Tooltip title="Fermer">
+              <Button
+                variant="outlined"
+                startIcon={<CloseIcon />}
+                sx={{
+                  borderColor: "#000",
+                  color: "#000",
+                  "&:hover": { borderColor: "#333", backgroundColor: "#f5f5f5" },
+                }}
+                onClick={handleCloseDialog}
+              >
+                Fermer
+              </Button>
+            </Tooltip>
+          </Box>
         </DialogActions>
+
       </Dialog>
+
 
       {/* Modale pour les documents */}
       {currentDocument && (

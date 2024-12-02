@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Modal, TextField, Box, Typography, Button } from "@mui/material";
-import {updateDataToAPI } from "../../../api";
+import { Modal, TextField, Box, Typography, Button, Grid } from "@mui/material";
+import { updateDataToAPI } from "../../../api";
+
 const RejeterRequestModal = ({ open, onClose, selectedRequest, requests, setRequests, setAlert }) => {
   const [commentaire, setCommentaire] = useState('');
   const [fichier, setFichier] = useState(null);
@@ -13,7 +14,7 @@ const RejeterRequestModal = ({ open, onClose, selectedRequest, requests, setRequ
     setFichier(event.target.files[0]);
   };
 
-  const handleValiderRequest = async () => {
+  const handleRejeterRequest = async () => {
     try {
       const formData = new FormData();
       formData.append("commentaire", commentaire);
@@ -35,29 +36,34 @@ const RejeterRequestModal = ({ open, onClose, selectedRequest, requests, setRequ
         message: "Demande rejetée avec succès et l'agent a été notifié.e",
       });
 
-      onClose(); // Fermer le modal après validation
+      onClose();
     } catch (error) {
       setAlert({
         severity: "error",
         title: "Erreur",
-        message: `Erreur lors de la validation de la demande : ${error.message}`,
+        message: `Erreur lors du rejet de la demande : ${error.message}`,
       });
     }
   };
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        backgroundColor: 'white',
-        padding: 4,
-        borderRadius: 2,
-        boxShadow: 24
-      }}>
-        <Typography variant="h6" gutterBottom>Réjeter</Typography>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#f9f9f9',
+          padding: 4,
+          borderRadius: 4,
+          boxShadow: 24,
+          width: 400,
+        }}
+      >
+        <Typography variant="h6" gutterBottom>
+          Réjeter la Demande
+        </Typography>
 
         <TextField
           label="Commentaire"
@@ -77,21 +83,28 @@ const RejeterRequestModal = ({ open, onClose, selectedRequest, requests, setRequ
           style={{ marginBottom: 16 }}
         />
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleValiderRequest}
-          sx={{ marginRight: 2 }}
-        >
-          Confirmer
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={onClose}
-        >
-          Annuler
-        </Button>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="error"
+              onClick={handleRejeterRequest}
+            >
+              Confirmer
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              onClick={onClose}
+            >
+              Annuler
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
     </Modal>
   );
