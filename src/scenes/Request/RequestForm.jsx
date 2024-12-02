@@ -190,7 +190,7 @@ const RequestForm = () => {
           />
 
           <Button variant="outlined" component="label" fullWidth>
-            Ajouter un fichier
+            Ajouter un document
             <input
               type="file"
               hidden

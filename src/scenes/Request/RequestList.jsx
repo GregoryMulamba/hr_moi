@@ -34,6 +34,15 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import DescriptionIcon from "@mui/icons-material/Description";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
+const getDocumentIcon = (extension) => {
+  switch (extension.toLowerCase()) {
+    case 'pdf': return <PictureAsPdfIcon />;
+    case 'docx':
+    case 'doc': return <DescriptionIcon />;
+    case 'xlsx': return <InsertDriveFileIcon />;
+    default: return <InsertDriveFileIcon />;
+  }
+};
 
 
 // Animation pour la modale
@@ -57,12 +66,6 @@ const DocumentDetailDialog = ({ open, onClose, document }) => (
           Télécharger le document
         </a>
       </Typography>
-      <Typography>
-        <strong>Extension :</strong> {document.extension.toUpperCase()}
-      </Typography>
-      <Typography>
-        <strong>Type de fichier :</strong> {getDocumentIcon(document.extension)}
-      </Typography>
     </DialogContent>
     <DialogActions>
       <Button variant="contained" color="inherit" onClick={onClose}>
@@ -83,18 +86,6 @@ const RequestList = () => {
   const [currentDocument, setCurrentDocument] = useState(null);
   const [openValiderModal, setOpenValiderModal] = useState(false);
   const [openRejeterModal, setOpenRejeterModal] = useState(false);
-
-  const getDocumentIcon = (extension) => {
-    switch (extension.toLowerCase()) {
-      case 'pdf': return <PictureAsPdfIcon />;
-      case 'docx':
-      case 'doc': return <DescriptionIcon />;
-      case 'xlsx': return <InsertDriveFileIcon />;
-      default: return <InsertDriveFileIcon />;
-    }
-  };
-
-
   const formatDate = (dateString) =>
     dateString
       ? new Intl.DateTimeFormat("fr-FR", {
@@ -416,13 +407,14 @@ const RequestList = () => {
                       onClick={() => handleDocumentClick(doc)}
                       sx={{ textTransform: "none", p: 0 }}
                     >
-                      {doc.split("/").pop()}
+                      {getDocumentIcon(doc.split('.').pop())} {doc.split("/").pop()}
                     </Button>
                   ))
                 ) : (
                   "Aucun fichier"
                 )}
               </Typography>
+
               <Typography>
                 <span className="detail-label">SLA:</span> {selectedRequest.sla}
               </Typography>
