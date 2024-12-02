@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { MenuItem, IconButton, Collapse, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import {
+  MenuItem,
+  IconButton,
+  Collapse,
+  List,
+  ListItemIcon,
+  ListItemText,
+  Box,
+  Typography,
+} from "@mui/material";
 import {
   School as FaSchool,
   ListAlt as FaListAlt,
@@ -9,233 +18,167 @@ import {
   Business as FaBuilding,
   SupervisorAccount as FaUserTie,
   Description as FaFileContract,
-  MailOutline as FaEnvelopeOpenText,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
   Poll as FaPoll,
   Assignment as FaAssignment,
   AssignmentInd as FaAssignmentInd,
-} from '@mui/icons-material';
-import { FaBars } from 'react-icons/fa';
+} from "@mui/icons-material";
+import { FaBars } from "react-icons/fa";
 
-import logoImage from '../utils/assets/Ordc.png';
+import logoImage from "../utils/assets/Ordc.png";
 
-const Sidebar = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [openModule, setOpenModule] = useState(null); // Gère quel module est ouvert
-
-  const toggle = () => setIsOpen(!isOpen);
+const Sidebar = ({ isSidebar, setIsSidebar, children }) => {
+  const [openModule, setOpenModule] = useState(null); // Contrôle quel module est ouvert
 
   const handleToggle = (module) => {
-    setOpenModule(openModule === module ? null : module); // Toggle un module spécifique
+    setOpenModule(openModule === module ? null : module); // Alterne l'état des dropdowns
   };
 
-  // Menu items par module
-  const menuItemsFormation = [
-    { path: '/trainingdashboard', name: 'Dashboard Formation', icon: <FaSchool /> },
-    { path: '/traininglist', name: 'Training List', icon: <FaListAlt /> },
-    { path: '/trainingparticipation', name: 'Participation', icon: <FaUsers /> },
-  ];
-
-  const menuItemsEffectif = [
-    { path: '/effectiflist', name: 'Effectif List', icon: <FaUsers /> },
-    { path: '/effectifdashboard', name: 'Effectif Dashboard', icon: <FaRegChartBar /> },
-    { path: '/directionList', name: 'Direction', icon: <FaBuilding /> },
-    { path: '/assign-subordinates', name: 'Assign Subordinates', icon: <FaUserTie /> },
-    { path: '/ContratList', name: 'Contrat', icon: <FaFileContract /> },
-    { path: '/EmployeurList', name: 'Employeur', icon: <FaUserTie /> },
-  ];
-
-  const menuItemsCompliance = [
-    { path: '/legal-compliance', name: 'Legal Compliance', icon: <FaPoll /> },
-    { path: '/privacy-settings', name: 'Privacy Settings', icon: <FaAssignment /> },
-  ];
-
-  const menuItemsHRIS = [
-    { path: '/hris-dashboard', name: 'HRIS Dashboard', icon: <FaAssignmentInd /> },
-    { path: '/kpis', name: 'KPIs', icon: <FaPoll /> },
-    { path: '/analytics', name: 'Analytics', icon: <FaPoll /> },
-  ];
-
-  const menuItemsOnboarding = [
-    { path: '/onboarding-form', name: 'Onboarding Form', icon: <FaPoll /> },
-    { path: '/onboarding-dashboard', name: 'Onboarding Dashboard', icon: <FaPoll /> },
-  ];
-
-  const menuItemsPayroll = [
-    { path: '/payroll-dashboard', name: 'Payroll Dashboard', icon: <FaPoll /> },
-    { path: '/payslips', name: 'Payslips', icon: <FaPoll /> },
-  ];
-
-  const menuItemsSurvey = [
-    { path: '/survey-form', name: 'Survey Form', icon: <FaPoll /> },
-    { path: '/survey-list', name: 'Survey List', icon: <FaPoll /> },
-    { path: '/survey-results', name: 'Survey Results', icon: <FaPoll /> },
+  const menuConfig = [
+    {
+      title: "Formation",
+      icon: <FaSchool />,
+      module: "formation",
+      items: [
+        { path: "/trainingdashboard", name: "Dashboard Formation" },
+        { path: "/traininglist", name: "Training List" },
+        { path: "/trainingparticipation", name: "Participation" },
+      ],
+    },
+    {
+      title: "Effectif",
+      icon: <FaUsers />,
+      module: "effectif",
+      items: [
+        { path: "/effectiflist", name: "Effectif List" },
+        { path: "/effectifdashboard", name: "Effectif Dashboard" },
+        { path: "/directionList", name: "Direction" },
+        { path: "/assign-subordinates", name: "Assign Subordinates" },
+        { path: "/ContratList", name: "Contrat" },
+        { path: "/EmployeurList", name: "Employeur" },
+      ],
+    },
+    {
+      title: "Compétences",
+      icon: <FaPoll />,
+      module: "competence",
+      items: [
+        { path: "/competence-matrix", name: "Matrice des Compétences" },
+        { path: "/job-profiles", name: "Profils Métier" },
+      ],
+    },
+    {
+      title: "Mobilité",
+      icon: <FaPoll />,
+      module: "mobility",
+      items: [
+        { path: "/mobility-tracking", name: "Suivi de Mobilité" },
+      ],
+    },
+    {
+      title: "Compliance",
+      icon: <FaPoll />,
+      module: "compliance",
+      items: [
+        { path: "/legal-compliance", name: "Legal Compliance" },
+        { path: "/privacy-settings", name: "Privacy Settings" },
+      ],
+    },
+    {
+      title: "HRIS",
+      icon: <FaAssignmentInd />,
+      module: "hris",
+      items: [
+        { path: "/hris-dashboard", name: "HRIS Dashboard" },
+        { path: "/kpis", name: "KPIs" },
+        { path: "/analytics", name: "Analytics" },
+      ],
+    },
+    {
+      title: "Onboarding",
+      icon: <FaPoll />,
+      module: "onboarding",
+      items: [
+        { path: "/onboarding-form", name: "Onboarding Form" },
+        { path: "/onboarding-dashboard", name: "Onboarding Dashboard" },
+      ],
+    },
+    {
+      title: "Payroll",
+      icon: <FaPoll />,
+      module: "payroll",
+      items: [
+        { path: "/payroll-dashboard", name: "Payroll Dashboard" },
+        { path: "/payslips", name: "Payslips" },
+      ],
+    },
+    {
+      title: "Survey",
+      icon: <FaPoll />,
+      module: "survey",
+      items: [
+        { path: "/survey-form", name: "Survey Form" },
+        { path: "/survey-list", name: "Survey List" },
+        { path: "/survey-results", name: "Survey Results" },
+      ],
+    },
   ];
 
   return (
-    <div className={`app ${!isOpen ? 'collapsed' : ''}`}>
-      <div className={`sidebar ${!isOpen ? 'collapsed' : ''}`}>
-        <div className="top_section">
+    <div className={`app ${!isSidebar ? "collapsed" : ""}`}>
+      <div className={`sidebar ${!isSidebar ? "collapsed" : ""}`}>
+        {/* Logo Section */}
+        <Box className="top_section" display="flex" alignItems="center" p={2}>
           <img
             src={logoImage}
             alt="Logo"
             className="logo-image"
-            style={{ display: isOpen ? 'block' : 'none' }}
+            style={{ display: isSidebar ? "block" : "none", height: 40 }}
           />
-          <h1 className="logo" style={{ display: isOpen ? 'block' : 'none' }}>
+          <Typography
+            variant="h6"
+            sx={{ ml: 2, display: isSidebar ? "block" : "none" }}
+          >
             HR & MOI
-          </h1>
-          <button className="toggle-button" onClick={toggle}>
+          </Typography>
+          <IconButton onClick={() => setIsSidebar(!isSidebar)}>
             <FaBars />
-          </button>
-        </div>
+          </IconButton>
+        </Box>
 
-        <div className="menu_section">
-          {/* Formation Module Dropdown */}
-          <MenuItem onClick={() => handleToggle('formation')}>
-            <ListItemIcon>
-              <FaSchool />
-            </ListItemIcon>
-            <ListItemText primary="Formation" />
-            {openModule === 'formation' ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </MenuItem>
-          <Collapse in={openModule === 'formation'} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItemsFormation.map((item, index) => (
-                <NavLink to={item.path} key={index} className="link">
-                  <MenuItem>
-                    <ListItemText primary={item.name} />
-                  </MenuItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* Effectif Module Dropdown */}
-          <MenuItem onClick={() => handleToggle('effectif')}>
-            <ListItemIcon>
-              <FaUsers />
-            </ListItemIcon>
-            <ListItemText primary="Effectif" />
-            {openModule === 'effectif' ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </MenuItem>
-          <Collapse in={openModule === 'effectif'} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItemsEffectif.map((item, index) => (
-                <NavLink to={item.path} key={index} className="link">
-                  <MenuItem>
-                    <ListItemText primary={item.name} />
-                  </MenuItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* Compliance Module Dropdown */}
-          <MenuItem onClick={() => handleToggle('compliance')}>
-            <ListItemIcon>
-              <FaPoll />
-            </ListItemIcon>
-            <ListItemText primary="Compliance" />
-            {openModule === 'compliance' ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </MenuItem>
-          <Collapse in={openModule === 'compliance'} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItemsCompliance.map((item, index) => (
-                <NavLink to={item.path} key={index} className="link">
-                  <MenuItem>
-                    <ListItemText primary={item.name} />
-                  </MenuItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* HRIS Module Dropdown */}
-          <MenuItem onClick={() => handleToggle('hris')}>
-            <ListItemIcon>
-              <FaPoll />
-            </ListItemIcon>
-            <ListItemText primary="HRIS" />
-            {openModule === 'hris' ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </MenuItem>
-          <Collapse in={openModule === 'hris'} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItemsHRIS.map((item, index) => (
-                <NavLink to={item.path} key={index} className="link">
-                  <MenuItem>
-                    <ListItemText primary={item.name} />
-                  </MenuItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* Onboarding Module Dropdown */}
-          <MenuItem onClick={() => handleToggle('onboarding')}>
-            <ListItemIcon>
-              <FaPoll />
-            </ListItemIcon>
-            <ListItemText primary="Onboarding" />
-            {openModule === 'onboarding' ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </MenuItem>
-          <Collapse in={openModule === 'onboarding'} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItemsOnboarding.map((item, index) => (
-                <NavLink to={item.path} key={index} className="link">
-                  <MenuItem>
-                    <ListItemText primary={item.name} />
-                  </MenuItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* Payroll Module Dropdown */}
-          <MenuItem onClick={() => handleToggle('payroll')}>
-            <ListItemIcon>
-              <FaPoll />
-            </ListItemIcon>
-            <ListItemText primary="Payroll" />
-            {openModule === 'payroll' ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </MenuItem>
-          <Collapse in={openModule === 'payroll'} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItemsPayroll.map((item, index) => (
-                <NavLink to={item.path} key={index} className="link">
-                  <MenuItem>
-                    <ListItemText primary={item.name} />
-                  </MenuItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* Survey Module Dropdown */}
-          <MenuItem onClick={() => handleToggle('survey')}>
-            <ListItemIcon>
-              <FaPoll />
-            </ListItemIcon>
-            <ListItemText primary="Survey" />
-            {openModule === 'survey' ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </MenuItem>
-          <Collapse in={openModule === 'survey'} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItemsSurvey.map((item, index) => (
-                <NavLink to={item.path} key={index} className="link">
-                  <MenuItem>
-                    <ListItemText primary={item.name} />
-                  </MenuItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
-        </div>
+        {/* Menu Sections */}
+        {menuConfig.map((menu, index) => (
+          <Box key={index}>
+            <MenuItem onClick={() => handleToggle(menu.module)}>
+              <ListItemIcon>{menu.icon}</ListItemIcon>
+              <ListItemText primary={menu.title} />
+              {openModule === menu.module ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </MenuItem>
+            <Collapse in={openModule === menu.module} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {menu.items.map((item, idx) => (
+                  <NavLink
+                    to={item.path}
+                    key={idx}
+                    className="link"
+                    activeClassName="active"
+                  >
+                    <MenuItem>
+                      <ListItemText primary={item.name} />
+                    </MenuItem>
+                  </NavLink>
+                ))}
+              </List>
+            </Collapse>
+          </Box>
+        ))}
       </div>
-      <main className={`content ${!isOpen ? 'collapsed' : ''}`}>{children}</main>
-      <footer className={`footer ${!isOpen ? 'collapsed' : ''}`}>
-        <p>&copy; 2024 ORDC</p>
+
+      {/* Main Content */}
+      <main className={`content ${!isSidebar ? "collapsed" : ""}`}>{children}</main>
+      <footer className={`footer ${!isSidebar ? "collapsed" : ""}`}>
+        <p>&copy; {new Date().getFullYear()} ORDC</p>
       </footer>
     </div>
   );
