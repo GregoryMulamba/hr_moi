@@ -101,8 +101,8 @@ const RequestList = () => {
         if (response.data && Array.isArray(response.data.results)) {
           const transformedData = response.data.results.map(
             (demande, index) => ({
-              id: demande.id + 1,
-              // id: demande.id,
+          
+              id: demande.id,
               assigned_to: demande.assigned_to || "Non assigné",
               groupe: demande.groupe || "Non défini",
               ticket: demande.ticket,

@@ -9,7 +9,7 @@ const RequestDashboard = () => {
   const [openForm, setOpenForm] = useState(false);
   const [requests, setRequests] = useState([]);
 
-  // Fonction pour ajouter une nouvelle demande
+
   const addRequest = (newRequest) => {
     setRequests([...requests, { ...newRequest, id: Date.now(), status: 'En attente' }]);
   };

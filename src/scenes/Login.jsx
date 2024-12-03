@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importer le hook useNavigate
+import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api";
 
 const LoginForm = () => {
@@ -8,24 +8,27 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Vérifiez si l'utilisateur est connecté
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError(""); // Réinitialiser l'erreur avant chaque tentative
+    setError("");
     try {
       await loginUser(cuid, password);
       console.log("Connexion réussie");
-      navigate("/dashboard"); // Redirection vers le Dashboard après connexion réussie
+      navigate("/dashboard"); // Redirection après connexion réussie
     } catch (error) {
       console.error("Erreur de connexion:", error.message);
       setError("Nom d'utilisateur ou mot de passe incorrect");
     }
   };
+
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.title}>Connexion</h2>
+        <h1 style={styles.title}>Bienvenue</h1>
+        <p style={styles.subtitle}>Connectez-vous à votre compte</p>
         <div style={styles.inputGroup}>
-          <label style={styles.label}>CUID</label>
+          <label style={styles.label}>Nom d'utilisateur (CUID)</label>
           <input
             type="text"
             value={cuid}
@@ -59,47 +62,51 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
-    backgroundColor: "#f4f4f9",
+    backgroundColor: "#f0f4f8",
   },
   form: {
     backgroundColor: "#ffffff",
     padding: "2rem",
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    width: "100%",
+    borderRadius: "10px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
     maxWidth: "400px",
+    width: "100%",
+    textAlign: "center",
   },
   title: {
-    textAlign: "center",
+    fontSize: "2rem",
+    color: "#333333",
+    marginBottom: "0.5rem",
+  },
+  subtitle: {
+    fontSize: "1rem",
+    color: "#666666",
     marginBottom: "1.5rem",
-    fontSize: "1.5rem",
-    color: "#333",
   },
   inputGroup: {
     marginBottom: "1rem",
+    textAlign: "left",
   },
   label: {
-    display: "block",
-    marginBottom: "0.5rem",
     fontSize: "0.9rem",
-    color: "#555",
+    color: "#555555",
+    marginBottom: "0.5rem",
+    display: "block",
   },
   input: {
     width: "100%",
-    padding: "0.8rem",
-    borderRadius: "4px",
-    border: "1px solid #ddd",
+    padding: "0.75rem",
+    borderRadius: "5px",
+    border: "1px solid #cccccc",
     fontSize: "1rem",
   },
   button: {
-    width: "100%",
-    padding: "0.8rem",
     backgroundColor: "#007BFF",
     color: "#ffffff",
     fontSize: "1rem",
-    fontWeight: "bold",
+    padding: "0.75rem",
+    borderRadius: "5px",
     border: "none",
-    borderRadius: "4px",
     cursor: "pointer",
     transition: "background-color 0.3s",
   },
@@ -107,10 +114,9 @@ const styles = {
     backgroundColor: "#0056b3",
   },
   error: {
-    marginBottom: "1rem",
     color: "red",
     fontSize: "0.9rem",
-    textAlign: "center",
+    marginBottom: "1rem",
   },
 };
 
