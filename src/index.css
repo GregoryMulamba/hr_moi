@@ -1,11 +1,9 @@
 /* Global Styles */
 
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/*@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+
 body, html {
   font-family: 'Source Sans Pro', sans-serif;
   height: 100%;
@@ -45,9 +43,9 @@ body, html {
 
 /* Styles pour l'image du logo */
 .logo-image {
-  width: 60px; /* Ajustez la taille selon vos besoins */
+  width: 30px; /* Ajustez la taille selon vos besoins */
   height: auto;
-  margin-right: 10px; /* Espacement entre l'image et le texte */
+  margin-right: 5px; /* Espacement entre l'image et le texte */
 }
 
 
@@ -155,7 +153,7 @@ body, html {
 
 /* Main Content Styles */
 .content {
-  margin-left: 114px; /* Réduction de la marge pour coller davantage la sidebar */
+  margin-left: 110px; /* Réduction de la marge pour coller davantage la sidebar */
   margin-top: 60px; /* Compte la hauteur de la topbar */
   padding: 20px;
   width: calc(100% - 270px); /* Ajustement de la largeur pour coller plus au sidebar */
@@ -166,7 +164,7 @@ body, html {
 
 /* Footer Styles */
 .footer {
-  padding: 10px;
+  padding: 5px;
   text-align: center;
   font-size: 0.8em;
   background-color: #FF7900;

@@ -400,6 +400,8 @@ export const externals = {
 export const mockData = {
   totalAgents: 676,
   trainingParticipation: {
+    Hommes:320 ,
+    Femmes:356,
     inPerson: 44,
     eLearning: 220,
     total: 676,

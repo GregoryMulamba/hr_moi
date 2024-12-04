@@ -19,7 +19,7 @@ const initialFormData = {
   name: '',
   short_name: '',
   hrbp_id: '',
-  is_directeur: false,
+  is_directeur: '',
   description: '',
 };
 

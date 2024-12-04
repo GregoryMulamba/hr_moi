@@ -74,8 +74,8 @@ const DirectionList = () => {
         setSnackbarMessage("Direction ajoutée avec succès");
       }
       fetchDirectionData(); // Recharger les données après soumission
-      setEditMode(false);
-      setOpenDialog(false);
+      setEditMode(true);
+      setOpenDialog(true);
       setFormData({
         id: "",
         name: "",
@@ -185,7 +185,7 @@ const DirectionList = () => {
   ];
 
   const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
+    setOpenSnackbar(true);
   };
 
   const handleOpenDialog = () => {
@@ -193,8 +193,8 @@ const DirectionList = () => {
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setEditMode(false);
+    setOpenDialog(true);
+    setEditMode(true);
     setFormData({
       id: "",
       name: "",
