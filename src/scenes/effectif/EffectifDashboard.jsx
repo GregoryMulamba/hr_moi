@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid, FormControl, InputLabel, Select, MenuItem, Typography, Box, Button, Card, CardContent, Modal, IconButton, Snackbar, Alert
 } from '@mui/material';
@@ -96,7 +96,6 @@ const EffectifDashboard = () => {
       { name: 'IT', total: 50, notTrained: 20, trained: 30, inPerson: 10, eLearning: 20, title: 'Tech Training' },
       { name: 'HR', total: 30, notTrained: 10, trained: 20, inPerson: 5, eLearning: 15, title: 'HR Workshop' },
     ],
-    staffData: [{ name: 'Staff 1', role: 'Manager' }, { name: 'Staff 2', role: 'Non-Manager' }],
     genderData: [{ label: 'Male', data: [60], backgroundColor: ['#2196f3'] }, { label: 'Female', data: [40], backgroundColor: ['#f50057'] }],
     directionsData: [{ label: 'IT', data: [50], backgroundColor: ['#4caf50'] }, { label: 'HR', data: [30], backgroundColor: ['#ff9800'] }],
     agePyramidData: { labels: ['20-30', '30-40', '40-50'], datasets: [{ data: [20, 50, 30], backgroundColor: ['#ffcd56', '#ff9f40', '#ff5733'] }] },
@@ -182,47 +181,46 @@ const EffectifDashboard = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           <Card sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>Répartition des Contrats</Typography>
-            <Doughnut data={createDoughnutData(mockData.contractTypesData)} options={{ maintainAspectRatio: true, responsive: true, height: 150 }} />
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>Répartition des Agents par Tranche d'Age</Typography>
-            <Bar data={createBarChartData(mockData.pyramidAgeData)} options={{ maintainAspectRatio: true, responsive: true, height: 150 }} />
+            <Typography variant="h6" gutterBottom>Effectifs par Type de Contrat</Typography>
+            <Bar data={createBarChartData(mockData.contractTypesData)} options={{ maintainAspectRatio: true, responsive: true, height: 150 }} />
           </Card>
         </Grid>
       </Grid>
 
-      <Box mt={3}>
-        <Button variant="contained" color="primary" onClick={downloadExcel}>Exporter en Excel</Button>
-      </Box>
+      <Grid container spacing={2} mt={3}>
+        <Grid item xs={12}>
+          <DataGrid rows={filteredDirections} columns={columns} pageSize={5} />
+        </Grid>
+      </Grid>
 
-      <DataGrid
-        rows={filteredDirections}
-        columns={columns}
-        pageSize={5}
-        disableSelectionOnClick
-        sx={{ height: 400, width: '100%', mt: 3 }}
-      />
-
-      <Modal open={modalOpen} onClose={handleCloseModal}>
+      {/* Modal */}
+      <Modal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
         <Box sx={modalStyle}>
-          <Typography variant="h6" gutterBottom>
-            {modalData?.title}
+          <Typography id="modal-title" variant="h6" component="h2">
+            {modalData?.title || 'Détails'}
           </Typography>
-          <Typography variant="body1">{`Total Formés: ${modalData?.trained}`}</Typography>
-          <Typography variant="body1">{`Non Formés: ${modalData?.notTrained}`}</Typography>
-          <Button variant="contained" onClick={handleCloseModal} sx={{ mt: 2 }}>Fermer</Button>
+          <Typography id="modal-description" sx={{ mt: 2 }}>
+            Détails supplémentaires sur {modalData?.name}.
+          </Typography>
         </Box>
       </Modal>
 
+      {/* Snackbar */}
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleCloseSnackbar}
       >
-        <Alert severity={snackbarSeverity} onClose={handleCloseSnackbar}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
