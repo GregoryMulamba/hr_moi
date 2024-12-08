@@ -32,8 +32,8 @@ import RequestDashboard from './scenes/Request/RequestDashboard';
 import RequestForm from './scenes/Request/RequestForm';
 import RequestList from './scenes/Request/RequestList';
 import AssignSubordinatesForm from './scenes/effectif/AssignSubordinatesForm';
-import AdminRoutes from './routes/AdminRoute';
-
+//import AdminRoutes from './routes/AdminRoute';
+import RoleManagement from "./components/RoleManagement";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -79,6 +79,7 @@ function App() {
               <Route path="/request-dashboard" element={<RequestDashboard />} />
               <Route path="/requestlist" element={<RequestForm />} />
               <Route path="/requestform" element={<RequestList />} />
+              <Route path="/roles" element={<RoleManagement />} />
             </Routes>
           </main>
           {/* Afficher le footer uniquement si ce n'est pas la page de login */}

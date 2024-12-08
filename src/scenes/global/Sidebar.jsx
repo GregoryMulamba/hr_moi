@@ -80,6 +80,9 @@ const Sidebar = ({ children }) => {
     request: [
       { path: '/requestform', name: 'RequestList', icon: <SupportAgentIcon style={iconStyle} /> },
     ],
+    rôles: [
+      { path: '/roles', name: 'RoleManagement', icon: <SupportAgentIcon style={iconStyle} /> },
+    ],
   };
 
   const renderMenuItems = (items) => (
