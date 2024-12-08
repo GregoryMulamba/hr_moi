@@ -11,7 +11,7 @@ const getToken = () => {
 // Fonction pour se connecter et récupérer le token
 export const loginUser = async (cuid, password) => {
   try {
-    const response = await axios.post(`${API_URL}/user/public/login/`, {
+    const response = await axios.post(`${API_URL}/user/public/auth/`, {
       cuid: cuid,
       password: password,
     });
