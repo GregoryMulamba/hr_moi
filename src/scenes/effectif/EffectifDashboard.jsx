@@ -1,138 +1,100 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Grid, FormControl, InputLabel, Select, MenuItem, Typography, Box, Button, Card, CardContent, Modal, IconButton, Snackbar, Alert
-} from '@mui/material';
+import React, { useState } from 'react';
+import { Grid, FormControl, InputLabel, Select, MenuItem, Typography, Box, Button, Card, CardContent, Modal, IconButton, Snackbar, Alert } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { Doughnut, Bar } from 'react-chartjs-2';
-import EditIcon from '@mui/icons-material/Edit';
-import 'chart.js/auto';
+import GroupIcon from '@mui/icons-material/Group';
 import * as XLSX from 'xlsx';
+
+const directions = [
+  { value: "DG", label: "Direction Générale" },
+  { value: "DAF", label: "Direction Financière" },
+  { value: "DST", label: "Direction Stratégie et Transformation" },
+  { value: "DRH", label: "Direction des Ressources Humaines" },
+  { value: "DEC", label: "Direction Expérience Client" },
+  { value: "DAL", label: "Direction Achats et Logistique" },
+  { value: "DRE", label: "Direction Reseaux" },
+  { value: "DJAR", label: "Direction Juridique & Affaires Réglementaires" },
+  { value: "B2C", label: "Direction Marketing & Communication B2C" },
+  { value: "DVD", label: "Direction de Ventes & Distribution" },
+  { value: "B2B", label: "Direction Commercial et Marketing B2B" },
+  { value: "OM", label: "Orange Money" },
+];
+
+const employeurs = [
+  { value: "Orange", label: "ORANGE" },
+  { value: "OM", label: "ORANGE MONEY" },
+  { value: "Itm", label: "ITM" },
+  { value: "Bnw", label: "BENSIZWE" },
+];
+
+// Mock data
+const mockData = {
+  Bensizwe: [
+    { id: 1, name: 'John Doe', gender: 'male', direction: 'Direction 1', contract: 'CDI' },
+    { id: 2, name: 'Jane Smith', gender: 'female', direction: 'Direction 2', contract: 'CDD' },
+  ],
+  Itm: [
+    { id: 1, name: 'Alice Brown', gender: 'female', direction: 'Direction 1', contract: 'CDI' },
+    { id: 2, name: 'Bob Johnson', gender: 'male', direction: 'Direction 3', contract: 'CDD' },
+  ],
+  Orange: [
+    { id: 1, name: 'Charlie Green', gender: 'male', direction: 'Direction 2', contract: 'CDI' },
+    { id: 2, name: 'Diana White', gender: 'female', direction: 'Direction 4', contract: 'CDD' },
+  ],
+  OrangeMoney: [
+    { id: 1, name: 'Eve Black', gender: 'female', direction: 'Direction 1', contract: 'CDI' },
+    { id: 2, name: 'Frank Blue', gender: 'male', direction: 'Direction 5', contract: 'CDD' },
+  ]
+};
 
 const EffectifDashboard = () => {
   const [filters, setFilters] = useState({ direction: '' });
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalData, setModalData] = useState(null);
+  const [modalData, setModalData] = useState([]);
+  const [modalTitle, setModalTitle] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
-  const handleChange = (event) => {
-    setFilters({
-      ...filters,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleCardClick = (data) => {
+  const handleCardClick = (title, data) => {
+    setModalTitle(title);
     setModalData(data);
     setModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  const handleCloseModal = () => setModalOpen(false);
 
   const downloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredDirections);
+    const worksheet = XLSX.utils.json_to_sheet(modalData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Effectif');
-    XLSX.writeFile(workbook, 'effectif_dashboard.xlsx');
+    XLSX.writeFile(workbook, `${modalTitle}_details.xlsx`);
     setSnackbarMessage('Données exportées avec succès en Excel');
-    setSnackbarSeverity('success');
     setOpenSnackbar(true);
   };
 
-  const createDoughnutData = (data) => ({
-    labels: data?.labels || [],
-    datasets: [
-      {
-        data: data?.datasets?.[0]?.data || [],
-        backgroundColor: data?.datasets?.[0]?.backgroundColor || [],
-      },
-    ],
-  });
-
-  const createBarChartData = (data) => ({
-    labels: data?.labels || [],
-    datasets: [
-      {
-        label: 'Agents par tranche d\'âge',
-        data: data?.data || [],
-        backgroundColor: ['#ffcd56', '#ff9f40', '#ff5733'],
-      },
-    ],
-  });
-
-  const renderWidget = (title, value, color, data) => (
+  const renderWidget = (title, value, color, data, IconComponent) => (
     <Card
       sx={{ minWidth: 275, backgroundColor: color, mb: 2, borderRadius: 2, boxShadow: 3, cursor: 'pointer' }}
-      onClick={() => handleCardClick(data)}
+      onClick={() => handleCardClick(title, data)}
     >
       <CardContent>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#fff' }}>
-          {title}
-        </Typography>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#fff' }}>
-          {value}
-        </Typography>
-        <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={() => handleCardClick(data)} sx={{ color: '#fff' }}>
-            <EditIcon />
-          </IconButton>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box>
+            <Typography variant="h6" sx={{ color: '#fff' }}>{title}</Typography>
+            <Typography variant="h3" sx={{ color: '#fff', fontWeight: 'bold' }}>{value}</Typography>
+          </Box>
+          <IconComponent sx={{ fontSize: 50, color: '#fff' }} />
         </Box>
       </CardContent>
     </Card>
   );
 
-  // Mock data
-  const mockData = {
-    totalStaff: 100,
-    genderDistribution: 60,
-    directions: [
-      { name: 'IT', total: 50, notTrained: 20, trained: 30, inPerson: 10, eLearning: 20, title: 'Tech Training' },
-      { name: 'HR', total: 30, notTrained: 10, trained: 20, inPerson: 5, eLearning: 15, title: 'HR Workshop' },
-    ],
-    genderData: [{ label: 'Male', data: [60], backgroundColor: ['#2196f3'] }, { label: 'Female', data: [40], backgroundColor: ['#f50057'] }],
-    directionsData: [{ label: 'IT', data: [50], backgroundColor: ['#4caf50'] }, { label: 'HR', data: [30], backgroundColor: ['#ff9800'] }],
-    agePyramidData: { labels: ['20-30', '30-40', '40-50'], datasets: [{ data: [20, 50, 30], backgroundColor: ['#ffcd56', '#ff9f40', '#ff5733'] }] },
-    contractTypesData: { labels: ['Permanent', 'Temporary'], datasets: [{ data: [70, 30], backgroundColor: ['#8e44ad', '#3498db'] }] },
-    pyramidAgeData: { labels: ['20-30', '30-40', '40-50'], data: [50, 30, 20] },
+  const filterByDirection = (data, direction) => {
+    if (!direction) return data;
+    return data.filter(item => item.direction === direction);
   };
 
-  const filteredDirections = filters.direction
-    ? mockData.directions.filter((direction) => direction.name === filters.direction).map((direction, index) => ({
-        ...direction,
-        id: index,
-    }))
-    : mockData.directions.map((direction, index) => ({
-        ...direction,
-        id: index,
-    }));
-
-  const columns = [
-    { field: 'name', headerName: 'Direction', width: 150 },
-    { field: 'total', headerName: 'Total', width: 100 },
-    { field: 'notTrained', headerName: 'Pas Formés', width: 150 },
-    { field: 'trained', headerName: 'Formés', width: 100 },
-    { field: 'inPerson', headerName: 'Hors E-Learning', width: 150 },
-    { field: 'eLearning', headerName: 'E-Learning', width: 150 },
-    { field: 'title', headerName: 'Titre de la formation', width: 200 },
-  ];
-
-  // Modal style definition
-  const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: 'white',
-    padding: 20,
-    boxShadow: 24,
-    borderRadius: 4,
+  const filteredData = (employeur) => {
+    return filterByDirection(mockData[employeur], filters.direction);
   };
 
   return (
@@ -141,88 +103,96 @@ const EffectifDashboard = () => {
         Tableau de bord de l'Effectif
       </Typography>
 
+      {/* Filtres */}
       <Grid container spacing={2} mb={2}>
         <Grid item xs={12} sm={6} md={4}>
           <FormControl variant="outlined" fullWidth>
             <InputLabel>Direction</InputLabel>
             <Select
-              name="direction"
               value={filters.direction}
-              onChange={handleChange}
+              onChange={(e) => setFilters({ ...filters, direction: e.target.value })}
               label="Direction"
             >
               <MenuItem value=""><em>Toutes les directions</em></MenuItem>
-              {mockData.directions.map((direction, index) => (
-                <MenuItem key={index} value={direction.name}>{direction.name}</MenuItem>
+              {directions.map((dir, index) => (
+                <MenuItem key={index} value={dir.value}>{dir.label}</MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
       </Grid>
 
-      <Grid container spacing={2} mb={2}>
-        <Grid item xs={12} md={4}>
-          {renderWidget('Effectif du Staff', mockData.totalStaff, '#4caf50', mockData.staffData)}
-        </Grid>
-        <Grid item xs={12} md={4}>
-          {renderWidget('Effectif par Genre', mockData.genderDistribution, '#2196f3', mockData.genderData)}
-        </Grid>
-        <Grid item xs={12} md={4}>
-          {renderWidget('Effectif par Direction', mockData.directions.length, '#ff9800', mockData.directionsData)}
-        </Grid>
-      </Grid>
+      {/* Widgets */}
+      <Grid container spacing={2}>
+        {employeurs.map((employeur) => (
+          <Grid item xs={12} md={4} key={employeur.value}>
+            {renderWidget(
+              `${employeur.label} Effectif`,
+              filteredData(employeur.value).length,
+              '#4caf50',
+              filteredData(employeur.value),
+              GroupIcon
+            )}
+          </Grid>
+        ))}
 
-      <Grid container spacing={2} mt={3}>
-        <Grid item xs={12} md={6}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>Répartition des Effectifs par Age</Typography>
-            <Doughnut data={createDoughnutData(mockData.agePyramidData)} options={{ maintainAspectRatio: true, responsive: true, height: 150 }} />
-          </Card>
+        {/* Genre */}
+        <Grid item xs={12} md={4}>
+          {renderWidget(
+            `Effectif par Genre`, 
+            `${mockData.Orange.filter(emp => emp.gender === 'male').length} / ${mockData.Orange.filter(emp => emp.gender === 'female').length}`, 
+            '#ff9800', 
+            mockData.Orange, 
+            GroupIcon
+          )}
         </Grid>
-        <Grid item xs={12} md={6}>
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>Effectifs par Type de Contrat</Typography>
-            <Bar data={createBarChartData(mockData.contractTypesData)} options={{ maintainAspectRatio: true, responsive: true, height: 150 }} />
-          </Card>
-        </Grid>
-      </Grid>
 
-      <Grid container spacing={2} mt={3}>
-        <Grid item xs={12}>
-          <DataGrid rows={filteredDirections} columns={columns} pageSize={5} />
+        {/* Taux d'attrition */}
+        <Grid item xs={12} md={4}>
+          {renderWidget(
+            `Taux d'attrition`, 
+            '5%', 
+            '#2196f3', 
+            [], 
+            GroupIcon
+          )}
+        </Grid>
+
+        {/* Contrat */}
+        <Grid item xs={12} md={4}>
+          {renderWidget(
+            `Types de contrat`, 
+            `CDI / CDD`, 
+            '#9c27b0', 
+            mockData.Orange, 
+            GroupIcon
+          )}
         </Grid>
       </Grid>
 
       {/* Modal */}
-      <Modal
-        open={modalOpen}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box sx={modalStyle}>
-          <Typography id="modal-title" variant="h6" component="h2">
-            {modalData?.title || 'Détails'}
-          </Typography>
-          <Typography id="modal-description" sx={{ mt: 2 }}>
-            Détails supplémentaires sur {modalData?.name}.
-          </Typography>
+      <Modal open={modalOpen} onClose={handleCloseModal}>
+        <Box sx={{
+          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'white', p: 4, borderRadius: 1
+        }}>
+          <Typography variant="h6">{modalTitle}</Typography>
+          <DataGrid
+            rows={modalData}
+            columns={[
+              { field: 'name', headerName: 'Nom', width: 150 },
+              { field: 'gender', headerName: 'Genre', width: 120 },
+              { field: 'direction', headerName: 'Direction', width: 150 },
+              { field: 'contract', headerName: 'Contrat', width: 150 }
+            ]}
+            pageSize={5}
+          />
+          <Button onClick={downloadExcel} sx={{ mt: 2 }} variant="contained">Exporter en Excel</Button>
         </Box>
       </Modal>
 
       {/* Snackbar */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-        >
-          {snackbarMessage}
-        </Alert>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+        <Alert onClose={() => setOpenSnackbar(false)} severity="success">{snackbarMessage}</Alert>
       </Snackbar>
     </Box>
   );
