@@ -40,7 +40,7 @@ const LoginForm = () => {
           style={styles.logo}
           />
         </Box>
-        <Typography variant="h4" sx={styles.title}>Bienvenue</Typography>
+        <Typography variant="h4" sx={styles.title}>Bienvenue sur MaxRH</Typography>
         <Typography variant="subtitle1" sx={styles.subtitle}>
           Connectez-vous à votre compte
         </Typography>

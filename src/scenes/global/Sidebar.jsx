@@ -107,7 +107,7 @@ const Sidebar = ({ children }) => {
             style={{ display: isOpen ? 'block' : 'none' }}
           />
           <h3 className="logo" style={{ display: isOpen ? 'block' : 'none' }}>
-            HR & MOI
+            Max RH
           </h3>
         </div>
 
